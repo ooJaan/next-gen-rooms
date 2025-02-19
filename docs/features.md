@@ -1,4 +1,4 @@
-
+# Features
 - Qr Code scannen und raum buchen
 - Verschlüsselung
 - Benutzerauthentifizierung
@@ -14,7 +14,7 @@
 - Kapazität
 - Kategorie
 
-Frontend
+# Frontend
 - Raum Übersicht
     - Raum am Plan auswählen / highlighten
     - Buchungszustand / Buchungen anzeigen 
@@ -22,12 +22,19 @@ Frontend
     - Kategorie
 - Responsive 
 
-Technologie 
+# Technologie 
 - Apache Vhosts
 - Linux VM 
 - Docker
 - React
 - Electron
+- C# Rest API und Backend
+- Postgres
+
+# Backend
+- Datenbankanbindung
+- Konsistenslogik 
+- (Räume nicht gleichzeitig) buchbar
 
 Edge Cases
 - Räume dürfen nicht gleichzeitig buchbar sein

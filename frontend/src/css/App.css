@@ -1,0 +1,130 @@
+.light {
+  --color-primary: hsl(223, 50%, 90%);
+  --color-secondary: hsl(223, 50%, 10%);
+  --color-tertiary: hsl(283, 80%, 20%);
+  --color-accent: hsl(163, 80%, 20%);
+}
+:root {
+  --color-primary: hsl(223, 50%, 10%);
+  --surface: hsl(223, 50%, 13%);
+  --divider: hsl(223, 50%, 30%);
+  --color-secondary: hsl(223, 50%, 90%);
+  --color-tertiary: hsl(283, 80%, 80%);
+  --color-accent: hsl(163, 80%, 80%);
+}
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 20px);
+  gap: 10px;
+  padding: 10px;
+  background-color: var(--color-primary);
+  color: var(--color-secondary)
+}
+
+.App {
+  background-color: var(--color-primary);
+  color: var(--color-secondary);
+  padding: 10px;
+}
+.flex-horizontal {
+  display: flex;
+  flex-direction: row;
+}
+.flex-horizontal > div {
+  flex-grow: 1;
+  padding: 10px;
+  align-content: center;
+}
+.flex-horizontal > div:last-child{
+  //align-content: flex-end;
+  text-align: right;
+  flex-grow: 0;
+}
+.flex-horizontal >div:first-child{
+  flex-grow: 0;
+}
+
+.title{
+  font-size: 1.75rem;
+}
+.content {
+  border-radius: 10px;
+  border: 2px solid var(--color-tertiary);
+  flex-grow: 1;
+  padding: 10px;
+  font-size: 1.25rem;
+}
+
+
+
+.RoomList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.RoomList > div {
+  background-color: var(--surface);
+  font-size: 1.25em;
+  display: flex;
+  flex-direction: row;
+  padding: 10px;
+  gap: 20px;
+}
+
+.RoomList > div > div{
+  display: flex;
+  text-align: center;
+  flex: 0;
+
+}
+.RoomList .Austattung {
+  flex: 5;
+}
+
+.RoomList .Name {
+  min-width: 80px;
+}
+
+.RoomList .buchung {
+  flex-grow: 0 !important;
+  width: min-content;
+  margin-top: -5px;
+  margin-bottom: -5px;
+  white-space: nowrap;
+}
+
+.RoomTable {
+  width: 100%;
+  font-size: 1.25rem;
+}
+
+
+.BuchenButton {
+  width: 100%;
+  height: 100%;
+  border-radius: 3px;
+  border: 2px solid var(--color-tertiary);
+  background-color: var(--color-primary);
+  color: var(--color-secondary);
+  flex-grow: 1;
+  padding: 5px;
+  font-size: 1.1rem;
+  cursor: pointer;
+}
+
+
+.BuchenButton:hover {
+  background-color: var(--color-tertiary);
+  color: var(--color-primary)
+}
+
+
+
+
+
+
+
+
+

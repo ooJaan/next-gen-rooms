@@ -1,0 +1,58 @@
+[
+    {
+      "roomId": "02e10620-0c89-5f76-ce79-52b6e0ffde58",
+      "name": "McGlynn - Cormier",
+      "number": null,
+      "capacity": 31,
+      "maxDuration": 1,
+      "typeId": "c4026e5e-bfb8-2c48-ea45-9738798baf08",
+      "bookings": []
+    },
+    {
+      "roomId": "c279cdae-04d1-e612-e2e5-267988010f52",
+      "name": "Pfannerstill - Schaden",
+      "number": null,
+      "capacity": 43,
+      "maxDuration": 43,
+      "typeId": "c4026e5e-bfb8-2c48-ea45-9738798baf08",
+      "bookings": [
+        {
+          "bookingId": "7927c995-d219-1a31-5257-ed9900796aeb",
+          "userId": "4fe2ca2f-f114-b8cc-5345-839bc2f340fa",
+          "roomId": "c279cdae-04d1-e612-e2e5-267988010f52",
+          "start": "2025-02-19T03:56:28.846347Z",
+          "end": "2025-02-19T12:14:17.57521Z",
+          "room": null,
+          "user": null
+        },
+        {
+          "bookingId": "8f2864b7-878a-139e-5cd8-554a4cd9781f",
+          "userId": "4fe2ca2f-f114-b8cc-5345-839bc2f340fa",
+          "roomId": "c279cdae-04d1-e612-e2e5-267988010f52",
+          "start": "2025-02-19T03:07:15.807693Z",
+          "end": "2025-02-19T12:14:17.575208Z",
+          "room": null,
+          "user": null
+        }
+      ]
+    },
+    {
+      "roomId": "cd187994-1f27-a230-d0e2-6b4f6a79965a",
+      "name": "Johns - Borer",
+      "number": null,
+      "capacity": 34,
+      "maxDuration": 37,
+      "typeId": "8501f64a-ff6e-ba7b-2008-25f481176728",
+      "bookings": [
+        {
+          "bookingId": "7c256650-7c4e-fad3-64c9-e8c2c94cbb1f",
+          "userId": "10d41124-189c-959b-bd03-ae48cfba5b1d",
+          "roomId": "cd187994-1f27-a230-d0e2-6b4f6a79965a",
+          "start": "2025-02-19T04:06:10.21191Z",
+          "end": "2025-02-19T12:14:17.57507Z",
+          "room": null,
+          "user": null
+        }
+      ]
+    }
+  ]
