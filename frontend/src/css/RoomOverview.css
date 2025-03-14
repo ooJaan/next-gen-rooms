@@ -1,0 +1,10 @@
+.overview-container {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+.overview-container > div {
+    flex-grow: 1;
+    background-color: var(--surface);
+    padding: 10px;
+}

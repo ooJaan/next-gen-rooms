@@ -24,7 +24,6 @@ const BaseLayout = ({ content, title }) => {
                 </div>
                 <div></div>
                 <div>
-                    BUTTON
                     <Link to="/">Home</Link>
                 </div>
             </div>

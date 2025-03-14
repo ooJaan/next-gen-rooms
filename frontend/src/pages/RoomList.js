@@ -4,21 +4,13 @@ import '../css/Table.css';
 import data from '../data/rooms.json'
 
 import React, { useState } from "react";
+import { Link, useNavigate } from 'react-router-dom';
+
 import Modal from '../comps/Modal';
+import Table from '../comps/Table';
 
 
-const RoomList = () => {
-    return (
-        <div className="RoomList">
-            <RoomListHeader></RoomListHeader>
-            <RoomListElem></RoomListElem>
-            <RoomListElem></RoomListElem>
-        </div>
-
-    )
-}
 const BuchungsButton = ({ openModal, raumnr }) => {
-
     return (
         <div className="buchung">
             <button onClick={() => openModal(raumnr)} className="BuchenButton">Raum Buchen</button>
@@ -26,47 +18,10 @@ const BuchungsButton = ({ openModal, raumnr }) => {
     )
 }
 
-const RoomTableElem = () => {
-    return (
-        <tr>
-            <td><div>●</div></td>
-            <td><div>namee</div></td>
-            <td><div>1334</div></td>
-            <td><div>Lehrsaal</div></td>
-            <td><div>32</div></td>
-            <td className="aus"><div>Beamer, Laptop</div></td>
-        </tr>
-    )
-}
-
-const RoomListHeader = () => {
+const ModalContent = ({ modalData }) => {
     return (
         <div>
-            <div>Status</div>
-            <div className="Name">Name</div>
-            <div>Raumnr</div>
-            <div>Kapazität</div>
-            <div className="Austattung">Ausstattung</div>
-        </div>
-    )
-}
-
-const RoomListElem = () => {
-    return (
-        <div>
-            <div>●</div>
-            <div className="Name">Name</div>
-            <div>Raumnr</div>
-            <div>Kapazität</div>
-            <div className="Austattung">Ausstattung</div>
-            <BuchungsButton></BuchungsButton>
-        </div>
-    )
-}
-const ModalContent = ( {modalData} ) => {
-    return (
-        <div>
-            <h2>Login</h2>
+            <h2>Raum Buchen</h2>
             <p><strong>Data:</strong> {modalData}</p>
             <form>
                 <label>Email:</label>
@@ -80,7 +35,8 @@ const ModalContent = ( {modalData} ) => {
 }
 
 
-const Table = () => {
+
+const RoomList = () => {
     const [modalData, setModalData] = useState(null);
     const openModal = (data) => {
         setModalData(data); // Store passed data in state
@@ -89,18 +45,15 @@ const Table = () => {
     const closeModal = () => {
         setModalData(null); // Clear modal data to close
     };
-    /*
-    const data = [
-        { status: "booked", name: "oberer ganeg", RaumNr: "c32", capacity: "13", Auststattung: ["Beamer", "Computer"] },
-        { status: "free", name: "oberer ganeg", RaumNr: "c31", capacity: "13", Auststattung: ["Beamer", "Computer"] },
-    ];
-    */
-
-
+    const navigate = useNavigate();
+    const handleClick = ( { id } ) => {
+        // This will navigate to the "/about" page
+        navigate('/overview/'+ id);
+    };
     return (
         <div>
-            <table className="custom-table">
-                <thead>
+            <Table
+                head={
                     <tr>
                         <th>Status</th>
                         <th>Name</th>
@@ -109,24 +62,22 @@ const Table = () => {
                         <th className="grow">Austattung</th>
                         <th></th>
                     </tr>
-                </thead>
-                <tbody>
-                    {data.map((row) => (
-                        <tr key={row.RaumNr}>
-                            <td className={row.status}><div>●</div></td>
-                            <td>{row.name}</td>
-                            <td>{row.number}</td>
-                            <td>{row.capacity}</td>
-                            <td>{row.Auststattung}</td>
-                            <td><BuchungsButton openModal={openModal} raumnr={row.roomId}></BuchungsButton></td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
+                }
+                body={data.map((row) => (
+                    <tr key={row.RaumNr}>
+                        <td className={row.status}><div>●</div></td>
+                        <td><Link to={`/overview/${row.roomId}`}>{row.name}</Link></td>
+                        <td>{row.number}</td>
+                        <td>{row.capacity}</td>
+                        <td>{row.Auststattung}</td>
+                        <td><BuchungsButton openModal={openModal} raumnr={row.roomId}></BuchungsButton></td>
+                    </tr>
+                ))}
+            />
             <Modal content={<ModalContent  modalData={modalData}/>} modalData={modalData} onClose={closeModal} />
         </div>
-    );
+    )
 };
 
 
-export default Table;
+export default RoomList;

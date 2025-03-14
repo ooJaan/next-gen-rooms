@@ -1,3 +1,5 @@
+import "../css/Table.css"
+
 
 const Table = ( {head, body}) => {
     return (
@@ -10,4 +12,6 @@ const Table = ( {head, body}) => {
             </tbody>
         </table>
     )
-}
+};
+
+export default Table;

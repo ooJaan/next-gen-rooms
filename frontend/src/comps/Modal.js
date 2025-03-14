@@ -1,9 +1,7 @@
 import React, { useEffect } from "react";
-import "../css/Modal.css"; // Import CSS for styling
+import "../css/Modal.css";
 
 const Modal = ({ content, modalData, onClose }) => {
-
-    // Close modal on "Esc" key press
     useEffect(() => {
         const handleKeyDown = (event) => {
             if (event.key === "Escape") {

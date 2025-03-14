@@ -1,10 +1,12 @@
-.light {
-  --color-primary: hsl(223, 50%, 90%);
-  --color-secondary: hsl(223, 50%, 10%);
-  --color-tertiary: hsl(283, 80%, 20%);
-  --color-accent: hsl(163, 80%, 20%);
-}
 :root {
+  --color-primary: hsl(223, 50%, 90%);
+  --surface: hsl(223, 50%, 97%);
+  --divider: hsl(223, 50%, 70%);
+  --color-secondary: hsl(223, 50%, 10%);
+  --color-tertiary: hsl(163, 80%, 20%);
+  --color-accent: hsl(283, 80%, 20%);
+}
+.dark {
   --color-primary: hsl(223, 50%, 10%);
   --surface: hsl(223, 50%, 13%);
   --divider: hsl(223, 50%, 30%);
