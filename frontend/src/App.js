@@ -6,6 +6,7 @@ import RoomOverview from './pages/RoomOverview';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Verify from './pages/Verify';
+import { Debug } from './pages/Debug';
 import Logout from './pages/Logout';
 
 import { AuthProvider } from "./provider/AuthProvider";
@@ -21,7 +22,7 @@ const App = () => {
           <Route path="/logout" element={<Logout />} />
           <Route path="/register" element={<BaseLayout title="Register" content={<Register />} />} />
           <Route path="/verify" element={<BaseLayout title="Verify" content={<Verify />} />} />
-          <Route path="/contact" element={<BaseLayout title="contact"></BaseLayout>} />
+          <Route path="/debug" element={<BaseLayout title="debug" content={<Debug/>}></BaseLayout>} />
           <Route element={<ProtectedRoute />}>
             <Route path="/list" element={<BaseLayout title="Room List" content={<RoomList></RoomList>}> </BaseLayout>} />
           </Route>
