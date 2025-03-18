@@ -1,12 +1,16 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { AuthContext } from "../provider/AuthProvider";
 
 const Verify = () => {
     const [user, setUser] = useState(localStorage.getItem("username"));
     const [code, setCode] = useState("");
+    const [error, setError] = useState("");
     const [password, setPassword] = useState(localStorage.getItem("pwd"));
 
+    const { loginPwd } = useContext(AuthContext);
+
     if (user === null | password === null) {
+        setError("no username set, are you logged in or registered correctly?")
         return (
             <div>
                 <h1>No username set. did you register correctly?</h1>
@@ -16,14 +20,16 @@ const Verify = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await fetch("https://api.baumi.me/auth/login", {
+            const response = await fetch("https://api.baumi.me/auth/verify", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ "username": user, "code": code }),
             });
-            if (response.ok) {
-
+            if (!response.ok) {
+                setError(response.json()["error"])
+                return 
             }
+            await loginPwd(user, password)
         }
         catch (error) {
             console.error("Verify error:", error);
@@ -45,7 +51,7 @@ const Verify = () => {
     const resendEmail = async (e) => {
         e.preventDefault();
         try {
-            const response = await fetch("https://api.baumi.me//auth/resend-verify-email", {
+            const response = await fetch("https://api.baumi.me/auth/resend-verify-email", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ "username": user }),
@@ -65,6 +71,7 @@ const Verify = () => {
     return (
         <div>
             <h2>Verify Email</h2>
+            {error}
             <form onSubmit={handleSubmit}>
                 <input placeholder="Code" value={code} onchange={(e) => setCode(e.target.value)}/>
                 <button type="submit">Verify</button>

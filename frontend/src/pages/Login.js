@@ -1,6 +1,7 @@
 import { useState, useContext } from "react";
 import { AuthContext } from "../provider/AuthProvider";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, Link } from "react-router-dom";
+
 
 const Login = () => {
     const [user, setUser] = useState("");
@@ -10,14 +11,20 @@ const Login = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const { loginPwd } = useContext(AuthContext);
-    //const [ user, setUser] = useContext(AuthContext);
-    //const [ password, setPassword] = useContext(AuthContext);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         console.log(user)
-        setError(await loginPwd(user, password));
+        const err = await loginPwd(user, password);
+        if (err !== "") {
+            setError(err)
+            console.log(error)
+            return
+        }
+        const redirectPath = new URLSearchParams(location.search).get("redirect") || "/";
+        navigate(redirectPath);
     };
+
 
     return (
         <div>
@@ -27,8 +34,8 @@ const Login = () => {
                 <input type="password" placeholder="Passwort" onChange={(e) => setPassword(e.target.value)} required />
                 <button type="submit">Login</button>
             </form>
+            Dont have an account? <Link to="/register">Register</Link>
         </div>
-
     );
 };
 
