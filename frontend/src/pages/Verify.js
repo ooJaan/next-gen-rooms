@@ -1,7 +1,10 @@
 import { useState, useContext } from "react";
 import { AuthContext } from "../provider/AuthProvider";
+import { useNavigate } from "react-router-dom";
+
 
 const Verify = () => {
+    const navigate = useNavigate();
     const [user, setUser] = useState(localStorage.getItem("username"));
     const [code, setCode] = useState("");
     const [error, setError] = useState("");
@@ -20,33 +23,29 @@ const Verify = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await fetch("https://api.baumi.me/auth/verify", {
+            const response = await fetch("https://api.baumi.me/auth/verify-email", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ "username": user, "code": code }),
             });
             if (!response.ok) {
-                setError(response.json()["error"])
+                const data = await response.json()
+                console.log("response data: ", data)
+                console.log("error while verifying: ", data["error"])
+                setError(data["error"])
                 return 
             }
-            await loginPwd(user, password)
+            const err = await loginPwd(user, password)
+            if (err !== ""){
+                setError(`login_err: ${err}`)
+                return
+            }
+            localStorage.removeItem("pwd")
+            navigate('/')
         }
         catch (error) {
             console.error("Verify error:", error);
         }
-    }
-    const login = async () => {
-        const response = await fetch("https://api.baumi.me/auth/login", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ "username": user, "password": password }),
-        });
-        const data = await response.json();
-            if (response.ok) {
-                login(data.accessToken);
-            } else {
-                alert("Invalid credentials");
-            }
     }
     const resendEmail = async (e) => {
         e.preventDefault();
@@ -73,10 +72,10 @@ const Verify = () => {
             <h2>Verify Email</h2>
             {error}
             <form onSubmit={handleSubmit}>
-                <input placeholder="Code" value={code} onchange={(e) => setCode(e.target.value)}/>
+                <input placeholder="Code" value={code} onChange={(e) => setCode(e.target.value)}/>
                 <button type="submit">Verify</button>
             </form>
-            <button onclick={resendEmail}>Resend Code</button>
+            <button onClick={resendEmail}>Resend Code</button>
         </div>
     )
 }

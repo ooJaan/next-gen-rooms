@@ -24,6 +24,13 @@ const Login = () => {
         const redirectPath = new URLSearchParams(location.search).get("redirect") || "/";
         navigate(redirectPath);
     };
+    if (localStorage.getItem("token") !== null) {
+        return (
+            <div>
+                <h1>Already logged in <Link to="/logout">Logout?</Link></h1>
+            </div>
+        )
+    }
 
 
     return (

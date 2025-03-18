@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Navigate, Outlet, useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 
 
@@ -9,6 +9,7 @@ const Register = () => {
     const [password1, setPassword1] = useState("")
     const [email, setEmail] = useState("")
     const [error, setError] = useState("")
+    const navigate = useNavigate();
     const Submit = async (e) => {
         e.preventDefault()
         if (password !== password1) {
@@ -35,9 +36,8 @@ const Register = () => {
                 console.log("successfully registered")
                 localStorage.setItem("username", user)
                 localStorage.setItem("pwd", password)
-                return (
-                    <Navigate to={`/verify`} />
-                )
+                navigate('/verify')
+                return
             }
             else {
                 console.log("error while registering: ", data["error"])
