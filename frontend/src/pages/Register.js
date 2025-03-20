@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import config from "../config";
+import { AuthContext } from "../provider/AuthProvider";
 
 
 
@@ -19,7 +21,7 @@ const Register = () => {
             return
         }
         try {
-            const response = await fetch("https://api.baumi.me/auth/register", {
+            const response = await fetch(`${config.apiUrl}/auth/register`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(

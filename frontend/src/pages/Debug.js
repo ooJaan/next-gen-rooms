@@ -2,6 +2,7 @@ import { useContext, useState } from "react";
 import { AuthContext } from "../provider/AuthProvider";
 
 import { useApi } from "../helpers/api";
+import config from "../config";
 
 
 export const Debug = () => {
@@ -13,7 +14,7 @@ export const Debug = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setData("")
-        const url= `https://api.baumi.me/${endpoint}`
+        const url= `${config.apiUrl}/${endpoint}`
         console.log("testing endponit: ", url)
         fetchWithAuth(endpoint)
         .then((data) => setData(JSON.stringify(data, null, 2)))

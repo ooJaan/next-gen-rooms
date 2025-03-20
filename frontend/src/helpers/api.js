@@ -1,12 +1,14 @@
 import { useContext } from "react";
 import { AuthContext } from "../provider/AuthProvider";
 
+import config from "../config";
+
 
 export const useApi = () => {
     const { token, refreshAccessToken } = useContext(AuthContext);
 
         const fetchWithAuth = async (endpoint, options = {}) => {
-            const url = `https://api.baumi.me/${endpoint}`
+            const url = `${config.apiUrl}/${endpoint}`
             console.log("fetching data from ", url)
             let response = await fetch(url, {
               ...options,
@@ -23,7 +25,7 @@ export const useApi = () => {
                 ...options,
                 headers: {
                     ...options.headers,
-                    Authorization: `Bearer ${localStorage.getItem("token")}`, // Get new token
+                    Authorization: `Bearer ${token}`, // Get new token
                 },
             });
         }

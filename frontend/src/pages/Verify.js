@@ -2,6 +2,8 @@ import { useState, useContext } from "react";
 import { AuthContext } from "../provider/AuthProvider";
 import { useNavigate } from "react-router-dom";
 
+import config from "../config";
+
 
 const Verify = () => {
     const navigate = useNavigate();
@@ -23,7 +25,7 @@ const Verify = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await fetch("https://api.baumi.me/auth/verify-email", {
+            const response = await fetch(`${config.apiUrl}/auth/verify-email`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ "username": user, "code": code }),
@@ -50,7 +52,7 @@ const Verify = () => {
     const resendEmail = async (e) => {
         e.preventDefault();
         try {
-            const response = await fetch("https://api.baumi.me/auth/resend-verify-email", {
+            const response = await fetch(`${config.apiUrl}/auth/resend-verify-email`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ "username": user }),

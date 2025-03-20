@@ -1,4 +1,5 @@
 import { createContext, useState, useEffect } from "react";
+import config from "../config";
 
 export const AuthContext = createContext();
 
@@ -18,7 +19,7 @@ export const AuthProvider = ({ children }) => {
     localStorage.setItem("username", username);
   };
   const loginPwd = async (username, password) => {
-    const response = await fetch("https://api.baumi.me/auth/login", {
+    const response = await fetch(`${config.apiUrl}/auth/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ "username": username, "password": password }),
@@ -33,7 +34,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = () => {
-    const response = fetch("https://api.baumi.me/auth/logout", {
+    const response = fetch(`${config.apiUrl}/auth/logout`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ "refreshToken": refreshToken }),
@@ -57,7 +58,7 @@ export const AuthProvider = ({ children }) => {
     }
 
     try {
-      const response = await fetch("https://api.baumi.me/auth/refresh", {
+      const response = await fetch(`${config.apiUrl}/auth/refresh`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ refreshToken }),
