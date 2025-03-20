@@ -7,14 +7,14 @@ import config from "../config";
 
 const Verify = () => {
     const navigate = useNavigate();
-    const [user, setUser] = useState(localStorage.getItem("username"));
     const [code, setCode] = useState("");
     const [error, setError] = useState("");
-    const [password, setPassword] = useState(localStorage.getItem("pwd"));
+    const {c_user, c_setUser} = useContext(AuthContext);
+    const {c_password, c_setPassword} = useContext(AuthContext);
 
     const { loginPwd } = useContext(AuthContext);
 
-    if (user === null | password === null) {
+    if (c_user === null | c_password === null) {
         setError("no username set, are you logged in or registered correctly?")
         return (
             <div>
@@ -28,7 +28,7 @@ const Verify = () => {
             const response = await fetch(`${config.apiUrl}/auth/verify-email`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ "username": user, "code": code }),
+                body: JSON.stringify({ "username": c_user, "code": code }),
             });
             if (!response.ok) {
                 const data = await response.json()
@@ -37,12 +37,11 @@ const Verify = () => {
                 setError(data["error"])
                 return 
             }
-            const err = await loginPwd(user, password)
+            const err = await loginPwd(c_user, c_password)
             if (err !== ""){
                 setError(`login_err: ${err}`)
                 return
             }
-            localStorage.removeItem("pwd")
             navigate('/')
         }
         catch (error) {
@@ -55,7 +54,7 @@ const Verify = () => {
             const response = await fetch(`${config.apiUrl}/auth/resend-verify-email`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ "username": user }),
+                body: JSON.stringify({ "username": c_user }),
             });
             if(!response.ok){
                 console.log("error happened while verifying")

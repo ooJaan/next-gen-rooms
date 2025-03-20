@@ -11,10 +11,13 @@ const Login = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const { loginPwd } = useContext(AuthContext);
+    const { c_user, c_setUser } = useContext(AuthContext)
+    const { loggedIn } = useContext(AuthContext)
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         console.log(user)
+        c_setUser(user)
         const err = await loginPwd(user, password);
         if (err !== "") {
             setError(err)
@@ -24,7 +27,7 @@ const Login = () => {
         const redirectPath = new URLSearchParams(location.search).get("redirect") || "/";
         navigate(redirectPath);
     };
-    if (localStorage.getItem("token") !== null) {
+    if (loggedIn) {
         return (
             <div>
                 <h1>Already logged in <Link to="/logout">Logout?</Link></h1>

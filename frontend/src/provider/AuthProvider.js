@@ -4,16 +4,50 @@ import config from "../config";
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
+  const [loggedIn, setLoggedIn ] = useState(null)
   const [token, setToken] = useState(localStorage.getItem("token") || null);
-  const [user, setUser] = useState(localStorage.getItem("username") || null);
+  const [c_user, c_setUser] = useState(localStorage.getItem("user") || null);
   const [refreshToken, setRefreshToken] = useState(localStorage.getItem("refreshToken") || null);
-  //const [password, setPassword] = useState(localStorage.getItem("pwd") || null);
+  const [c_password, c_setPassword] = useState(localStorage.getItem("pwd") || null);
+
+  useEffect(() => {
+    console.log("c_user has changed to ", c_user)
+    if (c_user) {
+      localStorage.setItem("user", c_user); // Persist to localStorage
+    } else {
+      localStorage.removeItem("user");
+    }
+  }, [c_user]);
+  useEffect(() => {
+    console.log("token has changed to ", token)
+
+    if (token) {
+      localStorage.setItem("token", token); // Persist to localStorage
+    } else {
+      localStorage.removeItem("token");
+    }
+  }, [token]);
+
+  useEffect(() => {
+    console.log("refreshToken has changed to ", refreshToken)
+
+    if (refreshToken) {
+      localStorage.setItem("refreshToken", refreshToken); // Persist to localStorage
+    } else {
+      localStorage.removeItem("refreshToken");
+    }
+  }, [refreshToken]);
+  useEffect(() => {
+    console.log("loggedIn has changed to ", loggedIn)
+  }, [loggedIn]);
 
   const login_token = (username, newToken, newRefreshToken) => {
     console.log("logging in with token: ", username, newToken, newRefreshToken)
     setToken(newToken);
     setRefreshToken(newRefreshToken);
-    setUser(username);
+    c_setUser(username);
+    console.log("setting loggedIn")
+    setLoggedIn(true)
     localStorage.setItem("token", newToken);
     localStorage.setItem("refreshToken", newRefreshToken);
     localStorage.setItem("username", username);
@@ -41,11 +75,9 @@ export const AuthProvider = ({ children }) => {
     });
     console.log("logging out response: ", response)
     setToken(null);
-    setUser(null);
+    c_setUser(null);
     setRefreshToken(null);
-    localStorage.removeItem("token");
-    localStorage.removeItem("username");
-    localStorage.removeItem("pwd");
+    setLoggedIn(false)
   };
 
   const refreshAccessToken = async () => {
@@ -89,7 +121,18 @@ export const AuthProvider = ({ children }) => {
   }, [token, refreshAccessToken]);
 
   return (
-    <AuthContext.Provider value={{ token, login: login_token, c_logout: logout, refreshAccessToken, loginPwd }}>
+    <AuthContext.Provider value={{ 
+        token, 
+        login: login_token, 
+        c_logout: logout, 
+        refreshAccessToken, 
+        loginPwd, 
+        c_user,
+        c_setUser,
+        c_password,
+        c_setPassword,
+        loggedIn
+      }}>
       {children}
     </AuthContext.Provider>
   );

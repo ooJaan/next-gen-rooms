@@ -1,21 +1,27 @@
 import '../css/App.css';
 import { Link } from "react-router-dom";
-import React, { useState } from "react";
-import Modal from '../comps/Modal';
+import React, { useContext } from "react";
+import { AuthContext } from "../provider/AuthProvider";
 
 
+const UserSection = ({loggedIn, user}) => {
+    console.log("usersection, ", loggedIn)
+    const {c_logout} = useContext(AuthContext)
+    if (loggedIn ){
+        return (
+            <div>
+                {user}
+                <button onClick={c_logout}>Logout</button>
+            </div>
+        )
+    }
+}
 
 
 const BaseLayout = ({ content, title }) => {
-    const [modalData, setModalData] = useState(null);
-
-    const openModal = (data) => {
-        setModalData(data); // Store passed data in state
-    };
-
-    const closeModal = () => {
-        setModalData(null); // Clear modal data to close
-    };
+    const { c_user } = useContext(AuthContext);
+    const { loggedIn } = useContext(AuthContext);
+    console.log(c_user, loggedIn)
     return (
         <div className="wrapper">
             <div className="flex-horizontal">
@@ -23,9 +29,7 @@ const BaseLayout = ({ content, title }) => {
                     { title }
                 </div>
                 <div></div>
-                <div>
-                    <Link to="/">Home</Link>
-                </div>
+                <UserSection loggedIn={loggedIn} user={c_user}/>
             </div>
             <div className="content">
                 { content }

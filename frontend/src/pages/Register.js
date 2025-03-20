@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import config from "../config";
 import { AuthContext } from "../provider/AuthProvider";
@@ -6,11 +6,14 @@ import { AuthContext } from "../provider/AuthProvider";
 
 
 const Register = () => {
-    const [user, setUser] = useState("")
+    const [user, setLocalUser] = useState("")
     const [password, setPassword] = useState("")
     const [password1, setPassword1] = useState("")
     const [email, setEmail] = useState("")
     const [error, setError] = useState("")
+
+    const {c_user, c_setUser} = useContext(AuthContext)
+    const {c_password, c_setPassword} = useContext(AuthContext)
     const navigate = useNavigate();
     const Submit = async (e) => {
         e.preventDefault()
@@ -36,8 +39,8 @@ const Register = () => {
             const data = await response.json()
             if (response.ok){
                 console.log("successfully registered")
-                localStorage.setItem("username", user)
-                localStorage.setItem("pwd", password)
+                c_setUser(user)
+                c_setPassword(password)
                 navigate('/verify')
                 return
             }
@@ -57,7 +60,7 @@ const Register = () => {
         <div>
             {error}
             <form onSubmit={Submit}>
-                <input placeholder="Username" onChange={(e) => setUser(e.target.value)} required />
+                <input placeholder="Username" onChange={(e) => setLocalUser(e.target.value)} required />
                 <input type="email" placeholder="Email" onChange={(e) => setEmail(e.target.value)} required />
                 <input type="password" placeholder="Password" minlenght="4" value={password} onChange={(e) => setPassword(e.target.value)} required />
                 <input type="password" placeholder="Confirm Password" minlenght="4" value={password1} onChange={(e) => setPassword1(e.target.value)} required />
