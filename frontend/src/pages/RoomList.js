@@ -8,31 +8,23 @@ import { Link, useNavigate } from 'react-router-dom';
 
 import Modal from '../comps/Modal';
 import Table from '../comps/Table';
+import BookingDialog from '../comps/BookDialog';
 
 import { useApi } from "../helpers/api";
 
 
-const BuchungsButton = ({ openModal, raumnr }) => {
+const BuchungsButton = ({ openModal, raumData, raumnr, raumName }) => {
+    const data={"nr": raumnr, "name": raumName}
     return (
         <div className="buchung">
-            <button onClick={() => openModal(raumnr)} className="BuchenButton">Raum Buchen</button>
+            <button onClick={() => openModal(raumData)} className="BuchenButton">Raum Buchen</button>
         </div>
     )
 }
 
 const ModalContent = ({ modalData }) => {
     return (
-        <div>
-            <h2>Raum Buchen</h2>
-            <p><strong>Data:</strong> {modalData}</p>
-            <form>
-                <label>Email:</label>
-                <input type="email" placeholder="Enter email" required />
-                <label>Password:</label>
-                <input type="password" placeholder="Enter password" required />
-                <button type="submit">Login</button>
-            </form>
-        </div>
+        <BookingDialog roomData={modalData}/>
     )
 }
 
@@ -45,8 +37,11 @@ const RoomList =  () => {
     const { fetchWithAuth } = useApi();
 
     const [modalData, setModalData] = useState(null);
+    const [modalClosed, setClosed] = useState(true);
     const openModal = (data) => {
+        setClosed(false)
         setModalData(data); // Store passed data in state
+        console.log(`setting modal data: ${data}`)
     };
     useEffect(() => {
         const fetchRooms = async () => {
@@ -66,6 +61,7 @@ const RoomList =  () => {
     },[]);
 
     const closeModal = () => {
+        setClosed(true)
         setModalData(null); // Clear modal data to close
     };
     const navigate = useNavigate();
@@ -97,11 +93,16 @@ const RoomList =  () => {
                         <td>{row.capacity}</td>
                         <td>{row.maxDuration}</td>
                         <td>{row.Auststattung}</td>
-                        <td><BuchungsButton openModal={openModal} raumnr={row.roomId}></BuchungsButton></td>
+                        <td><BuchungsButton openModal={openModal} raumData={row} raumnr={row.roomId} raumName={row.name}></BuchungsButton></td>
                     </tr>
                 ))}
             />
-            <Modal content={<ModalContent  modalData={modalData}/>} modalData={modalData} onClose={closeModal} />
+            <Modal 
+                content={<ModalContent  modalData={modalData}/>} 
+                modalData={modalData} 
+                onClose={closeModal} 
+                closed={modalClosed}
+            />
         </div>
     )
 };
