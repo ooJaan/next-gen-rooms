@@ -1,26 +1,29 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
+import { AuthContext } from "../provider/AuthProvider";
+
 
 import { useApi } from "../helpers/api";
-
-const toISOString = (date) => {
-    return new Date(date).toISOString();
-};
+import config from "../config";
 
 
 
 
 const BookingDialog = ({ roomData = null }) => {
-    const [startDateTime, setStartDateTime] = useState("");
-    const [endDateTime, setEndDateTime] = useState("");
+    const {c_userId } = useContext(AuthContext);
     const [loading, setLoading] = useState(true);
     const [rooms, setRooms] = useState({});
     const [selectValue, setSelectValue] = useState({});
-    const { fetchWithAuth } = useApi();
-    const step = 15;
+    const [error, setError] = useState(null)
+    const [startTime, setStartTime] = useState("");
+    const [startDate, setStartDate] = useState("");
+    const [endTime, setEndTime] = useState("");
+    const [buttonDisabled, setButtonDisabled] = useState(false)
+    const { fetchWithAuth, postWithAuth } = useApi();
 
 
 
     // if no room is set we want to display a select #TODO
+    // TODO a booking cannot be over a day
     useEffect(() => {
         const fetchRooms = async () => {
             try {
@@ -36,38 +39,96 @@ const BookingDialog = ({ roomData = null }) => {
             fetchRooms();
         }
     }, []);
-    const formatDateToLocalString = (date) => {
+    useEffect(() => {
+        // runs at start
+        const now = new Date();
+        const formattedDate = formatDate(now);
+        const formattedTime = formatTime(now)
+        setStartDate(formattedDate);
+        setStartTime(formattedTime);
+    }, []);
+
+    useEffect(() => {
+        const start = StringToDate(startDate, startTime)
+        const end = StringToDate(startDate, endTime)
+        console.log(`${start} end: ${end}`)
+        const now = new Date();
+        if (!startTime | !endTime) {
+            setError("no start or endtime")
+            return
+        }
+        if (now > startTime){
+            setError("kann keinen raum rückwirkend buchen")
+            return
+        }
+        if (start > end ){
+            setError("start muss vor dem Ende sein")
+            return
+        }
+        const durationMin = (end - start) / (1000 * 60)
+        console.log(`max-duration ${roomData.maxDuration} diff ${durationMin}`)
+        if (durationMin > roomData.maxDuration) {
+            setError(`Raum kann nicht länger als ${roomData.maxDuration}min gebucht werden`)
+            return
+        }
+        setError(null)
+
+    }, [startTime, endTime])
+
+    useEffect(() => {
+        console.log("error has changed to", error)
+        if(error === null) {
+            setButtonDisabled(false);
+        }
+        else {
+            setButtonDisabled(true);
+        }
+    }, [error])
+    const formatTime = (date) => {
+        const hh = date.getHours().toString().padStart(2, "0");
+        const mm = date.getMinutes().toString().padStart(2, "0");
+        return `${hh}:${mm}`
+    }
+    const formatDate = (date) => {
         const yyyy = date.getFullYear();
         const mm = (date.getMonth() + 1).toString().padStart(2, "0");
         const dd = date.getDate().toString().padStart(2, "0");
-        const hh = date.getHours().toString().padStart(2, "0");
-        const mi = date.getMinutes().toString().padStart(2, "0");
-        return `${yyyy}-${mm}-${dd}T${hh}:${mi}`;
-    };
+        return `${yyyy}-${mm}-${dd}`
+    }
 
-    useEffect(() => {
-        const now = new Date();
-        const formattedDate = formatDateToLocalString(now);
-        setStartDateTime(formattedDate);
-    }, []);
+    const StringToDate = (date, time) => {
+        const dateTimeString = `${date}T${time}:00`;
+        return new Date(dateTimeString);
+    }
 
 
-    const handleStartChange = (event) => {
-        setStartDateTime(event.target.value);
-    };
-    const handleEndChange = (event) => {
-        setEndDateTime(event.target.value);
-    };
+
+    const handleSartTimeChange = (event) => {
+        setStartTime(event.target.value)
+    }
+    const handleStartDateChange = (event) => {
+        setStartDate(event.target.value)
+    }
+    const handleEndTimeChange = (event) => {
+        setEndTime(event.target.value)
+    }
+
     const handleSubmit = () => {
-        const startISO = startDateTime ? toISOString(startDateTime) : null;
-        const endISO = endDateTime ? toISOString(endDateTime) : null;
-        console.log(startISO, endISO, roomData, selectValue)
+        const startISO = StringToDate(startDate, startTime).toISOString()
+        const endISO = StringToDate(startDate, endTime).toISOString()
+        var req = {
+            "roomId": roomData.id,
+            "userId": c_userId,
+            "startDate": startISO,
+            "endDate": endISO
+        }
+        console.log(JSON.stringify(req)) 
+        postWithAuth("booking/create", req)
     };
     const handleSelectChange = (event) => {
         setSelectValue(event.target.value);
     };
 
-    const isButtonDisabled = startDateTime === "" || endDateTime === "";
 
 
     return (
@@ -88,25 +149,38 @@ const BookingDialog = ({ roomData = null }) => {
                     <p>{roomData.number} - {roomData.name}</p>
                 )}
 
+                {error}
+
                 <input
-                    type="datetime-local"
-                    id="start-date-time"
-                    value={startDateTime}
-                    step={step}
-                    onChange={handleStartChange}
+                    type="date"
+                    id="start-date"
+                    value={startDate}
+                    min={startDate}
+                    onChange={handleStartDateChange}
                 />
-                <input
-                    type="datetime-local"
-                    min={startDateTime}
-                    id="end-date-time"
-                    value={endDateTime}
-                    step={step}
-                    onChange={handleEndChange}
-                />
+                <div>
+
+                    <input
+                        type="time"
+                        id="start-time"
+                        value={startTime}
+                        step={config.minutenStep}
+                        min={startTime}
+                        onChange={handleSartTimeChange}
+                    />
+                    <input
+                        type="time"
+                        id="end-time"
+                        value={endTime}
+                        step={config.minutenStep}
+                        onChange={handleEndTimeChange}
+                        min={startTime}
+                    />
+                </div>
                 <button
-                    disabled={isButtonDisabled}
+                    disabled={buttonDisabled}
                     onClick={handleSubmit}
-                >Book</button>
+                >Buchen</button>
             </div>
         </div>
     )
