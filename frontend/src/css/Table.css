@@ -9,19 +9,28 @@
     /* Adds 5px spacing between rows */
     white-space: nowrap;
 }
+
 .custom-table thead {
     font-size: 1.25rem;
 }
-.custom-table thead tr th{
+
+.custom-table thead tr th {
     padding-top: 15px;
     padding-bottom: 15px;
     padding-left: 7.5px;
     padding-right: 7.5px;
 }
 
-.custom-table tr:first{
+.custom-table tr:first {
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-    padding: 5px
+    padding: 5px;
+    box-shadow: var(--shadow-bottom), var(--shadow-top);
+
+}
+
+.custom-table tr {
+    box-shadow: var(--shadow-small);
+
 }
 
 .custom-table th,
@@ -29,7 +38,7 @@
     padding: 8px;
     text-align: left;
     min-width: min-content;
-    
+
     background-color: var(--surface);
     /* Ensures rows have a single background color */
 }
@@ -41,10 +50,11 @@
     text-align: center;
 }
 
-.custom-table tbody tr .free{
+.custom-table tbody tr .free {
     color: green;
 }
-.custom-table tbody tr .booked{
+
+.custom-table tbody tr .booked {
     color: red;
 }
 

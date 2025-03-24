@@ -1,10 +1,22 @@
 :root {
   --color-primary: hsl(223, 50%, 90%);
-  --surface: hsl(223, 50%, 97%);
+  --surface: hsl(223, 50%, 90%);
   --divider: hsl(223, 50%, 70%);
   --color-secondary: hsl(223, 50%, 10%);
   --color-tertiary: hsl(163, 80%, 20%);
+  --color-tertiary-hover: hsl(163, 80%, 25%);
   --color-accent: hsl(283, 80%, 20%);
+
+  --ff: "Space Grotesk", sans-serif;
+  --h1: bold 1.125rem/1.4em var(--ff);
+  --h2: bold 1rem/1.4em var(--ff);
+  --p: 1rem/1.4em var(--ff);
+  --p2: 0.875rem/1.4em var(--ff);
+  --shadow-top: 0 -2px 8px 0 rgba(0, 0, 0, 0.2), 0 -5px 20px 0 rgba(0, 0, 0, 0.15);
+  --shadow-bottom: 0 2px 8px 0 rgba(0, 0, 0, 0.2), 0 5px 20px 0 rgba(0, 0, 0, 0.15);
+  --shadow-small: 0 2px 6px 0 rgba(0, 0, 0, 0.2), 0 3px 10px 0 rgba(0, 0, 0, 0.19);
+
+  --border-radius: 5px;
 }
 .dark {
   --color-primary: hsl(223, 50%, 10%);
@@ -18,7 +30,7 @@
 .wrapper {
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 20px);
+  min-height: calc(100vh - 20px);
   gap: 10px;
   padding: 10px;
   background-color: var(--color-primary);
@@ -29,23 +41,10 @@
   background-color: var(--color-primary);
   color: var(--color-secondary);
   padding: 10px;
+  font: var(--ff);
 }
-.flex-horizontal {
-  display: flex;
-  flex-direction: row;
-}
-.flex-horizontal > div {
-  flex-grow: 1;
-  padding: 10px;
-  align-content: center;
-}
-.flex-horizontal > div:last-child{
-  //align-content: flex-end;
-  text-align: right;
-  flex-grow: 0;
-}
-.flex-horizontal >div:first-child{
-  flex-grow: 0;
+.navbar {
+  justify-content: space-between;
 }
 
 .title{
@@ -102,31 +101,21 @@
   font-size: 1.25rem;
 }
 
+button {
+  background-color: var(--color-tertiary);
+  color: var(--surface);
+  padding: 5px;
+  cursor: pointer;
+  font-size: 1.1rem;
+}
+button:hover {
+  background-color: var(--color-tertiary-hover);
+}
 
 .BuchenButton {
   width: 100%;
   height: 100%;
   border-radius: 3px;
-  border: 2px solid var(--color-tertiary);
-  background-color: var(--color-primary);
-  color: var(--color-secondary);
   flex-grow: 1;
-  padding: 5px;
   font-size: 1.1rem;
-  cursor: pointer;
 }
-
-
-.BuchenButton:hover {
-  background-color: var(--color-tertiary);
-  color: var(--color-primary)
-}
-
-
-
-
-
-
-
-
-
