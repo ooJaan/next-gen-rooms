@@ -24,7 +24,10 @@ const App = () => {
           <Route path="/verify" element={<BaseLayout title="Verify" content={<Verify />} />} />
           <Route path="/debug" element={<BaseLayout title="debug" content={<Debug/>}></BaseLayout>} />
           <Route element={<ProtectedRoute />}>
-            <Route path="/list" element={<BaseLayout title="Room List" content={<RoomList></RoomList>}> </BaseLayout>} />
+            <Route path="/" element={<BaseLayout title="Room List" content={<RoomList></RoomList>}> </BaseLayout>} />
+            <Route path="/overview/:id" element={<BaseLayout title="Room List" content={<RoomOverview></RoomOverview>}> </BaseLayout>} />
+            <Route path="/debug" element={<BaseLayout title="debug" content={<Debug/>}></BaseLayout>} />
+            <Route path="/users" element={<BaseLayout title="debug" content={<Users/>}></BaseLayout>} />
           </Route>
           <Route path="/list-dev" element={<BaseLayout title="Room List" content={<RoomList></RoomList>}> </BaseLayout>} />
           <Route path="/overview/:id" element={<BaseLayout title="Room List" content={<RoomOverview></RoomOverview>}> </BaseLayout>} />
