@@ -1,7 +1,8 @@
 import React, { useEffect } from "react";
 import "../css/Modal.css";
+import "../css/App.css";
 
-const Modal = ({ content, modalData, onClose }) => {
+const Modal = ({ content, modalData, closed, onClose }) => {
     useEffect(() => {
         const handleKeyDown = (event) => {
             if (event.key === "Escape") {
@@ -15,7 +16,7 @@ const Modal = ({ content, modalData, onClose }) => {
         };
     }, [onClose]);
 
-    if (!modalData) return null;
+    if (closed) return null;
 
     return (
         <div className="modal-overlay" onClick={onClose}>
