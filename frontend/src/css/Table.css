@@ -15,14 +15,11 @@
 }
 
 .custom-table thead tr th {
-    padding-top: 15px;
-    padding-bottom: 15px;
     padding-left: 7.5px;
     padding-right: 7.5px;
 }
 
 .custom-table tr:first {
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
     padding: 5px;
     box-shadow: var(--shadow-bottom), var(--shadow-top);
 
@@ -39,7 +36,7 @@
     text-align: left;
     min-width: min-content;
 
-    background-color: var(--surface);
+    background-color: var(--color-primary);
     /* Ensures rows have a single background color */
 }
 
@@ -48,14 +45,6 @@
     margin-top: -20px;
     margin-bottom: -20px;
     text-align: center;
-}
-
-.custom-table tbody tr .free {
-    color: green;
-}
-
-.custom-table tbody tr .booked {
-    color: red;
 }
 
 .custom-table th {

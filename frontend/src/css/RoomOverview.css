@@ -1,10 +1,39 @@
+.overview {
+    display: flex;
+    flex-grow: 1;
+    flex-direction: column;
+    gap: 10px;
+}
+div {
+    border-radius: var(--border-radius);
+}
+
 .overview-container {
     display: flex;
     flex-direction: row;
     gap: 10px;
+    flex-grow: 1;
+    flex-wrap: wrap;
 }
 .overview-container > div {
     flex-grow: 1;
     background-color: var(--surface);
     padding: 10px;
+}
+.status-msg {
+    max-height: min-content;
+    padding: 10px;
+    font-size: 1.75em;
+    background-color: var(--surface);
+    border: 3px solid tran;
+    border-width: 3px;
+    border-style: solid;
+    border-color: transparent;
+}
+
+.status-msg.status-1 {
+    border-color: red !important;
+}
+.status-msg.status-2 {
+    border-color: orange !important;
 }

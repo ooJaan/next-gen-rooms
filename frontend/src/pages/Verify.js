@@ -9,8 +9,8 @@ const Verify = () => {
     const navigate = useNavigate();
     const [code, setCode] = useState("");
     const [error, setError] = useState("");
-    const {c_user, c_setUser} = useContext(AuthContext);
-    const {c_password, c_setPassword} = useContext(AuthContext);
+    const { c_user, c_setUser } = useContext(AuthContext);
+    const { c_password, c_setPassword } = useContext(AuthContext);
 
     const { loginPwd } = useContext(AuthContext);
 
@@ -35,10 +35,10 @@ const Verify = () => {
                 console.log("response data: ", data)
                 console.log("error while verifying: ", data["error"])
                 setError(data["error"])
-                return 
+                return
             }
             const err = await loginPwd(c_user, c_password)
-            if (err !== ""){
+            if (err !== null) {
                 setError(`login_err: ${err}`)
                 return
             }
@@ -56,27 +56,35 @@ const Verify = () => {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ "username": c_user }),
             });
-            if(!response.ok){
+            if (!response.ok) {
                 console.log("error happened while verifying")
                 return
             }
-            
+
         }
         catch (error) {
             console.error("Verify error:", error);
         }
-        
+
     }
 
     return (
-        <div>
-            <h2>Verify Email</h2>
-            {error}
-            <form onSubmit={handleSubmit}>
-                <input placeholder="Code" value={code} onChange={(e) => setCode(e.target.value)}/>
-                <button type="submit">Verify</button>
-            </form>
-            <button onClick={resendEmail}>Resend Code</button>
+        <div className="login-container">
+            <div className="login-form">
+                <div className="title">
+                    Verify Email
+                </div>
+                <div className="error">
+                    {error}
+                </div>
+                <form onSubmit={handleSubmit}>
+                    <input placeholder="Code" value={code} onChange={(e) => setCode(e.target.value)} />
+                    <button type="submit">Verify</button>
+                </form>
+                <div>
+                    <button onClick={resendEmail}>Resend Code</button>
+                </div>
+            </div>
         </div>
     )
 }

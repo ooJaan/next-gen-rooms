@@ -1,34 +1,6 @@
-:root {
-  --color-primary: hsl(223, 50%, 90%);
-  --surface: hsl(223, 50%, 90%);
-  --divider: hsl(223, 50%, 70%);
-  --color-secondary: hsl(223, 50%, 10%);
-  --color-tertiary: hsl(163, 80%, 20%);
-  --color-tertiary-hover: hsl(163, 80%, 25%);
-  --color-accent: hsl(283, 80%, 20%);
-
-  --ff: "Space Grotesk", sans-serif;
-  --h1: bold 1.125rem/1.4em var(--ff);
-  --h2: bold 1rem/1.4em var(--ff);
-  --p: 1rem/1.4em var(--ff);
-  --p2: 0.875rem/1.4em var(--ff);
-  --shadow-top: 0 -2px 8px 0 rgba(0, 0, 0, 0.2), 0 -5px 20px 0 rgba(0, 0, 0, 0.15);
-  --shadow-bottom: 0 2px 8px 0 rgba(0, 0, 0, 0.2), 0 5px 20px 0 rgba(0, 0, 0, 0.15);
-  --shadow-small: 0 2px 6px 0 rgba(0, 0, 0, 0.2), 0 3px 10px 0 rgba(0, 0, 0, 0.19);
-
-  --border-radius: 5px;
-}
-.dark {
-  --color-primary: hsl(223, 50%, 10%);
-  --surface: hsl(223, 50%, 13%);
-  --divider: hsl(223, 50%, 30%);
-  --color-secondary: hsl(223, 50%, 90%);
-  --color-tertiary: hsl(283, 80%, 80%);
-  --color-accent: hsl(163, 80%, 80%);
-}
-
 .wrapper {
   display: flex;
+  flex-grow: 1;
   flex-direction: column;
   min-height: calc(100vh - 20px);
   gap: 10px;
@@ -41,21 +13,33 @@
   background-color: var(--color-primary);
   color: var(--color-secondary);
   padding: 10px;
-  font: var(--ff);
 }
+
 .navbar {
   justify-content: space-between;
 }
 
-.title{
+.title {
   font-size: 1.75rem;
 }
+.error {
+  color: var(--color-error);
+  font-size: 1.25rem;
+}
+
 .content {
   border-radius: 10px;
   border: 2px solid var(--color-tertiary);
   flex-grow: 1;
+  display: flex;
   padding: 10px;
+  font-family: var(--ff);
   font-size: 1.25rem;
+  flex-direction: column;
+}
+
+.content>div {
+  flex-grow: 1;
 }
 
 
@@ -65,7 +49,8 @@
   flex-direction: column;
   gap: 10px;
 }
-.RoomList > div {
+
+.RoomList>div {
   background-color: var(--surface);
   font-size: 1.25em;
   display: flex;
@@ -74,12 +59,13 @@
   gap: 20px;
 }
 
-.RoomList > div > div{
+.RoomList>div>div {
   display: flex;
   text-align: center;
   flex: 0;
 
 }
+
 .RoomList .Austattung {
   flex: 5;
 }
@@ -88,6 +74,18 @@
   min-width: 80px;
 }
 
+.status-0 {
+  color: green;
+  border-color: green;
+}
+.status-1 {
+  color: red;
+  border-color: red;
+}
+.status-2 {
+  color: orange;
+  border-color: orange;
+}
 .RoomList .buchung {
   flex-grow: 0 !important;
   width: min-content;
@@ -99,17 +97,6 @@
 .RoomTable {
   width: 100%;
   font-size: 1.25rem;
-}
-
-button {
-  background-color: var(--color-tertiary);
-  color: var(--surface);
-  padding: 5px;
-  cursor: pointer;
-  font-size: 1.1rem;
-}
-button:hover {
-  background-color: var(--color-tertiary-hover);
 }
 
 .BuchenButton {

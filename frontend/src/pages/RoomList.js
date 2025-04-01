@@ -1,17 +1,17 @@
 import '../css/App.css';
 import '../css/Table.css';
+import '../css/responsive.css';
 
-
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Link, useNavigate } from 'react-router-dom';
 
 
-import Modal from '../comps/Modal';
 import Table from '../comps/Table';
 import BookingDialog from '../comps/BookDialog';
-
+import NewRoom from '../comps/newRoom';
 import { useApi } from "../helpers/api";
-
+import { AuthContext } from '../provider/AuthProvider';
+import { RoomContext } from '../provider/RoomStatus.tsx';
 
 const BuchungsButton = ({ openModal, raumData, raumnr, raumName }) => {
     const data={"nr": raumnr, "name": raumName}
@@ -22,87 +22,86 @@ const BuchungsButton = ({ openModal, raumData, raumnr, raumName }) => {
     )
 }
 
-const ModalContent = ({ modalData }) => {
-    return (
-        <BookingDialog roomData={modalData}/>
-    )
-}
 
 
 
-const RoomList =  () => {
-    const [ rooms, setRooms] = useState({});
-    const [loading, setLoading] = useState(true);
+
+const RoomList =  ({}) => {
+    const { rooms, roomLoading, status, statusLoading, types, typesLoading } = useContext(RoomContext)
+    const [ modalClosed, setModalClosed] = useState(true)
+    const [ roomDialogClosed, setRoomDialogClosed] = useState(true)
+    const [ modalData, setModalData] = useState(true)
     const [error, setError] = useState(null);
     const { fetchWithAuth } = useApi();
-
-    const [modalData, setModalData] = useState(null);
-    const [modalClosed, setClosed] = useState(true);
-    const openModal = (data) => {
-        setClosed(false)
-        setModalData(data); // Store passed data in state
-        console.log(`setting modal data: ${data}`)
-    };
-    useEffect(() => {
-        const fetchRooms = async () => {
-            try {
-                const response = await fetchWithAuth("room"); // Replace with actual endpoint
-                console.log(response)
-                setRooms(response); // Store the response in state
-                setLoading(false);
-            } catch (err) {
-                console.error("Error fetching rooms:", err);
-                setError("Failed to load rooms.");
-                setLoading(false);
-            }
-        };
-
-        fetchRooms();
-    },[]);
-
-    const closeModal = () => {
-        setClosed(true)
-        setModalData(null); // Clear modal data to close
-    };
     const navigate = useNavigate();
-    const handleClick = ( { id } ) => {
-        // This will navigate to the "/about" page
-        navigate('/overview/'+ id);
+    const {c_role} = useContext(AuthContext);
+
+
+
+    const openModal = (data) => {
+        setModalClosed(false)
+        setModalData(data);
+        console.log(`setting modal data: ${JSON.stringify(data)}`)
     };
-    if (loading) return <p>Loading...</p>;
+
+    const openRoomDialog = () => {
+        setRoomDialogClosed(false)
+    }
+
+
+    if (roomLoading) return <p>Loading...</p>;
     if (error) return <p>{error}</p>;
     return (
         <div>
+            {c_role === "Administrator" ? (
+                <button onClick={openRoomDialog}>New Room</button>
+            ) : null}
             <Table
                 head={
                     <tr>
-                        <th>Status</th>
-                        <th>Name</th>
-                        <th>RaumNr</th>
-                        <th>Kapazität</th>
-                        <th>Max Buchungsdauer</th>
-                        <th className="grow">Austattung</th>
                         <th></th>
+                        <th className='t-name'>Name</th>
+                        <th className='t-nr'>RaumNr</th>
+                        <th className='t-cap'>Kapazität</th>
+                        <th className='t-type'>Typ</th>
+                        <th className="grow t-assets">Austattung</th>
+
                     </tr>
                 }
                 body={Object.entries(rooms).map(([key, row]) => (
                     <tr key={key} name={key}>
-                        <td className={row.status}><div>●</div></td>
-                        <td><Link to={`/overview/${row.roomId}`}>{row.name}</Link></td>
-                        <td>{row.number}</td>
-                        <td>{row.capacity}</td>
-                        <td>{row.maxDuration}</td>
-                        <td>{row.Auststattung}</td>
-                        <td><BuchungsButton openModal={openModal} raumData={row} raumnr={row.roomId} raumName={row.name}></BuchungsButton></td>
+                        <td className={!statusLoading ? `status-${status[key]?.type}` : ''}><div>●</div></td>
+                        <td className='t-name'><Link to={`/overview/${row.roomId}`}>{row.name}</Link></td>
+                        <td className='t-nr'>{row.number}</td>
+                        <td className='t-cap'>{row.capacity}</td>
+                        <td className='t-type'>
+                            {!typesLoading ? (
+                                <>{types[row.typeId].name}</>
+                            ): null }
+                        </td>
+                        <td className='t-assets'>{row.Auststattung}</td>
+                        <td>
+                            <BuchungsButton openModal={openModal} raumData={row} raumnr={row.roomId} raumName={row.name}/>
+                        </td>
+                        <td>
+                            {c_role === "Administrator" ? (
+                                <button onClick={() => navigate(`/edit/${row.roomId}`)}>⚙</button>
+                            ):null}
+                        </td>
                     </tr>
                 ))}
             />
-            <Modal 
-                content={<ModalContent  modalData={modalData}/>} 
-                modalData={modalData} 
-                onClose={closeModal} 
-                closed={modalClosed}
+
+            <BookingDialog
+                roomData={modalData}
+                setClosed={setModalClosed}
+                modalClosed={modalClosed}
             />
+            <NewRoom
+                setClosed={setRoomDialogClosed}
+                modalClosed={roomDialogClosed}
+            />
+
         </div>
     )
 };

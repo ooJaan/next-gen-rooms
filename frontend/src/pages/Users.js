@@ -61,10 +61,6 @@ const Users = () => {
     const deleteUser = async (userId) => {
         console.log("deleting user with id: ", userId)
         const resp = await deleteWithAuth(`users/${userId}`)
-        if (!resp.ok) {
-            console.log("error deleting user")
-            return
-        }
         const { [userId]: deleted, ...updatedUsers } = users;
         setUsers(updatedUsers);
     }
@@ -76,10 +72,6 @@ const Users = () => {
         }
         console.log(data)
         const resp = await patchWithAuth(`users/change-role/${userId}`, data)
-        if (!resp.ok) {
-            console.log("error while updating the user role")
-            return
-        }
         const updatedUsers = { ...users };
         updatedUsers[userId].roleId = role.value;
         setUsers(updatedUsers)
@@ -90,7 +82,7 @@ const Users = () => {
 
 
     return (
-        <>
+        <div>
             <Table
                 head={
                     <tr>
@@ -123,7 +115,7 @@ const Users = () => {
                     </tr>
                 ))}
             />
-        </>
+        </div>
 
     )
 }

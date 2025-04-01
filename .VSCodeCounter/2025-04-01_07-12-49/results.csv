@@ -1,0 +1,60 @@
+"filename", "language", "nix", "Markdown", "Properties", "JSON with Comments", "JavaScript", "CSS", "Shell Script", "Docker", "YAML", "XML", "TypeScript JSX", "HTML", "TypeScript", "comment", "blank", "total"
+"/home/jan/git/personal/next-gen-rooms/docker/backup_conf/postgresql.conf", "Properties", 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 6
+"/home/jan/git/personal/next-gen-rooms/docker/docker-compose.yml", "YAML", 0, 0, 0, 0, 0, 0, 0, 0, 47, 0, 0, 0, 0, 0, 5, 52
+"/home/jan/git/personal/next-gen-rooms/docker/primary_conf/pg_hba.conf", "Properties", 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 4
+"/home/jan/git/personal/next-gen-rooms/docker/primary_conf/postgresql.conf", "Properties", 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5
+"/home/jan/git/personal/next-gen-rooms/docs/Tasks.md", "Markdown", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1
+"/home/jan/git/personal/next-gen-rooms/docs/features.md", "Markdown", 0, 37, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 43
+"/home/jan/git/personal/next-gen-rooms/frontend/.env", "Properties", 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1
+"/home/jan/git/personal/next-gen-rooms/frontend/Dockerfile", "Docker", 0, 0, 0, 0, 0, 0, 0, 11, 0, 0, 0, 0, 0, 1, 10, 22
+"/home/jan/git/personal/next-gen-rooms/frontend/README.md", "Markdown", 0, 38, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 33, 71
+"/home/jan/git/personal/next-gen-rooms/frontend/build-n-push.sh", "Shell Script", 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 1, 1, 4
+"/home/jan/git/personal/next-gen-rooms/frontend/next-gen-rooms.code-workspace", "JSON with Comments", 0, 0, 0, 11, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 11
+"/home/jan/git/personal/next-gen-rooms/frontend/ngnix.conf", "Properties", 0, 0, 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 10
+"/home/jan/git/personal/next-gen-rooms/frontend/public/index.html", "HTML", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 20, 0, 23, 1, 44
+"/home/jan/git/personal/next-gen-rooms/frontend/public/logo.svg", "XML", 0, 0, 0, 0, 0, 0, 0, 0, 0, 48, 0, 0, 0, 1, 2, 51
+"/home/jan/git/personal/next-gen-rooms/frontend/src/App.js", "JavaScript", 0, 0, 0, 0, 42, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 45
+"/home/jan/git/personal/next-gen-rooms/frontend/src/App.test.js", "JavaScript", 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 9
+"/home/jan/git/personal/next-gen-rooms/frontend/src/comps/BookDialog.js", "JavaScript", 0, 0, 0, 0, 182, 0, 0, 0, 0, 0, 0, 0, 0, 2, 26, 210
+"/home/jan/git/personal/next-gen-rooms/frontend/src/comps/Modal.js", "JavaScript", 0, 0, 0, 0, 28, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 33
+"/home/jan/git/personal/next-gen-rooms/frontend/src/comps/MultiSelect.js", "JavaScript", 0, 0, 0, 0, 17, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 21
+"/home/jan/git/personal/next-gen-rooms/frontend/src/comps/RoomAssets.js", "JavaScript", 0, 0, 0, 0, 159, 0, 0, 0, 0, 0, 0, 0, 0, 7, 16, 182
+"/home/jan/git/personal/next-gen-rooms/frontend/src/comps/Table.js", "JavaScript", 0, 0, 0, 0, 14, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 17
+"/home/jan/git/personal/next-gen-rooms/frontend/src/config.js", "JavaScript", 0, 0, 0, 0, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 9
+"/home/jan/git/personal/next-gen-rooms/frontend/src/css/App.css", "CSS", 0, 0, 0, 0, 0, 92, 0, 0, 0, 0, 0, 0, 0, 0, 16, 108
+"/home/jan/git/personal/next-gen-rooms/frontend/src/css/Login.css", "CSS", 0, 0, 0, 0, 0, 25, 0, 0, 0, 0, 0, 0, 0, 0, 2, 27
+"/home/jan/git/personal/next-gen-rooms/frontend/src/css/Modal.css", "CSS", 0, 0, 0, 0, 0, 49, 0, 0, 0, 0, 0, 0, 0, 5, 7, 61
+"/home/jan/git/personal/next-gen-rooms/frontend/src/css/RoomEdit.css", "CSS", 0, 0, 0, 0, 0, 45, 0, 0, 0, 0, 0, 0, 0, 0, 6, 51
+"/home/jan/git/personal/next-gen-rooms/frontend/src/css/RoomOverview.css", "CSS", 0, 0, 0, 0, 0, 37, 0, 0, 0, 0, 0, 0, 0, 0, 3, 40
+"/home/jan/git/personal/next-gen-rooms/frontend/src/css/Table.css", "CSS", 0, 0, 0, 0, 0, 42, 0, 0, 0, 0, 0, 0, 0, 2, 12, 56
+"/home/jan/git/personal/next-gen-rooms/frontend/src/css/classes.css", "CSS", 0, 0, 0, 0, 0, 8, 0, 0, 0, 0, 0, 0, 0, 0, 2, 10
+"/home/jan/git/personal/next-gen-rooms/frontend/src/css/fonts.css", "CSS", 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4
+"/home/jan/git/personal/next-gen-rooms/frontend/src/css/index.css", "CSS", 0, 0, 0, 0, 0, 57, 0, 0, 0, 0, 0, 0, 0, 0, 10, 67
+"/home/jan/git/personal/next-gen-rooms/frontend/src/css/responsive.css", "CSS", 0, 0, 0, 0, 0, 15, 0, 0, 0, 0, 0, 0, 0, 0, 3, 18
+"/home/jan/git/personal/next-gen-rooms/frontend/src/helpers/Date.js", "JavaScript", 0, 0, 0, 0, 23, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 27
+"/home/jan/git/personal/next-gen-rooms/frontend/src/helpers/Modify.ts", "TypeScript", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 121, 13, 10, 144
+"/home/jan/git/personal/next-gen-rooms/frontend/src/helpers/ValidatePw.js", "JavaScript", 0, 0, 0, 0, 13, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 15
+"/home/jan/git/personal/next-gen-rooms/frontend/src/helpers/api.js", "JavaScript", 0, 0, 0, 0, 69, 0, 0, 0, 0, 0, 0, 0, 0, 1, 16, 86
+"/home/jan/git/personal/next-gen-rooms/frontend/src/helpers/types.ts", "TypeScript", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1
+"/home/jan/git/personal/next-gen-rooms/frontend/src/index.js", "JavaScript", 0, 0, 0, 0, 10, 0, 0, 0, 0, 0, 0, 0, 0, 5, 3, 18
+"/home/jan/git/personal/next-gen-rooms/frontend/src/logo.svg", "XML", 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1
+"/home/jan/git/personal/next-gen-rooms/frontend/src/next-gen-rooms.code-workspace", "JSON with Comments", 0, 0, 0, 11, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 11
+"/home/jan/git/personal/next-gen-rooms/frontend/src/pages/BaseLayout.js", "JavaScript", 0, 0, 0, 0, 35, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 41
+"/home/jan/git/personal/next-gen-rooms/frontend/src/pages/ChangePw.js", "JavaScript", 0, 0, 0, 0, 69, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 78
+"/home/jan/git/personal/next-gen-rooms/frontend/src/pages/Debug.js", "JavaScript", 0, 0, 0, 0, 38, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 44
+"/home/jan/git/personal/next-gen-rooms/frontend/src/pages/Login.js", "JavaScript", 0, 0, 0, 0, 60, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8, 68
+"/home/jan/git/personal/next-gen-rooms/frontend/src/pages/Logout.js", "JavaScript", 0, 0, 0, 0, 20, 0, 0, 0, 0, 0, 0, 0, 0, 3, 7, 30
+"/home/jan/git/personal/next-gen-rooms/frontend/src/pages/Register.js", "JavaScript", 0, 0, 0, 0, 70, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 76
+"/home/jan/git/personal/next-gen-rooms/frontend/src/pages/RoomEdit.js", "JavaScript", 0, 0, 0, 0, 165, 0, 0, 0, 0, 0, 0, 0, 0, 1, 14, 180
+"/home/jan/git/personal/next-gen-rooms/frontend/src/pages/RoomList.js", "JavaScript", 0, 0, 0, 0, 78, 0, 0, 0, 0, 0, 0, 0, 0, 0, 21, 99
+"/home/jan/git/personal/next-gen-rooms/frontend/src/pages/RoomOverview.js", "JavaScript", 0, 0, 0, 0, 67, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 74
+"/home/jan/git/personal/next-gen-rooms/frontend/src/pages/Users.js", "JavaScript", 0, 0, 0, 0, 114, 0, 0, 0, 0, 0, 0, 0, 0, 0, 13, 127
+"/home/jan/git/personal/next-gen-rooms/frontend/src/pages/Verify.js", "JavaScript", 0, 0, 0, 0, 83, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 92
+"/home/jan/git/personal/next-gen-rooms/frontend/src/provider/AdminRoute.js", "JavaScript", 0, 0, 0, 0, 11, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 15
+"/home/jan/git/personal/next-gen-rooms/frontend/src/provider/AuthProvider.js", "JavaScript", 0, 0, 0, 0, 190, 0, 0, 0, 0, 0, 0, 0, 0, 1, 23, 214
+"/home/jan/git/personal/next-gen-rooms/frontend/src/provider/ProtectedRoute.js", "JavaScript", 0, 0, 0, 0, 22, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 24
+"/home/jan/git/personal/next-gen-rooms/frontend/src/provider/RoomStatus.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 129, 0, 0, 17, 20, 166
+"/home/jan/git/personal/next-gen-rooms/frontend/src/reportWebVitals.js", "JavaScript", 0, 0, 0, 0, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 14
+"/home/jan/git/personal/next-gen-rooms/frontend/src/setupTests.js", "JavaScript", 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 4, 1, 6
+"/home/jan/git/personal/next-gen-rooms/shell.nix", "nix", 17, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 17
+"Total", "-", 17, 75, 23, 22, 1607, 374, 2, 11, 47, 49, 129, 20, 121, 89, 375, 2961

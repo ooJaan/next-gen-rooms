@@ -1,16 +1,25 @@
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import { AuthContext } from "../provider/AuthProvider";
+import { RoomContext } from "../provider/RoomStatus.tsx";
+
+import BookingDialog from "../comps/BookDialog";
 
 import { useApi } from "../helpers/api";
 import config from "../config";
 
 
 export const Debug = () => {
-    const { token, refreshAccessToken } = useContext(AuthContext);
-    const { fetchWithAuth } = useApi();
+    const { fetchWithAuth} = useApi();
     const [ endpoint, setEndpoint] = useState("");
     const [ data, setData] = useState("");
-    
+    const { rooms, status, getAllstatus } = useContext(RoomContext);
+    const { refreshAccessToken } = useContext(AuthContext);
+
+    const refreshToken = async (e) => {
+        e.preventDefault();
+        await refreshAccessToken();
+    }
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setData("")
@@ -23,8 +32,8 @@ export const Debug = () => {
     }
     return (
         <div>
-            {token}
-            <button onClick={() => refreshAccessToken()}>refresh token</button>
+            <button onClick={(e) => refreshAccessToken(e)}>Refresh Access Token</button>
+            <pre>{JSON.stringify(status, null, 2)}</pre>
             <form onSubmit={handleSubmit}>
                 <input type="text" onChange={(e) => setEndpoint(e.target.value)}></input>
                 <button type="submit">Test Endpoint</button>

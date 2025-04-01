@@ -5,39 +5,65 @@ import config from "../config";
 
 
 export const useApi = () => {
-    const { token, refreshAccessToken } = useContext(AuthContext);
+    const { token, refreshAccessToken, c_logout, loggedIn } = useContext(AuthContext);
 
-    const reqWithAuth = async (endpoint, method="GET", data) => {
+    const reqWithAuth = async (endpoint, method="GET", data, refreshIfFailed=true) => {
         const url = `${config.apiUrl}/${endpoint}`
-        console.log(`${method} to ${url} with data: ${data}`)
+        
+        const headers = {
+            "Authorization": `Bearer ${token}`,
+        };
+        
+        // Only add Content-Type and body for non-GET requests
         const req = {
             method: method,
-            headers: {
-                "Content-Type": "application/json", // Ensure Content-Type is always included
-                "Authorization": `Bearer ${token}`, // Include token
-            },
-            body: JSON.stringify(data)
+            headers: headers,
+        };
+        
+        if (method !== "GET" && data) {
+            req.headers["Content-Type"] = "application/json";
+            req.body = JSON.stringify(data);
         }
+
         let response = await fetch(url, req);
-        if (response.status === 401) {
-            console.log("unauthorized --> trying to refresh the token")
-            await refreshAccessToken();
-            response = await fetch(url, req);
-        }
         if (!response.ok) {
-            return {}
+            throw {
+                name: 'ApiError',
+                status: response.status,
+                statusText: response.statusText,
+                message: `HTTP error! status: ${response.status} - ${response.statusText}`
+            };
+                
+        }
+        if (refreshIfFailed) {
+            if (response.status === 401) {
+                console.log("unauthorized --> trying to refresh the token")
+                await refreshAccessToken();
+                req.headers["Authorization"] = `Bearer ${token}`;
+                response = await fetch(url, req);
+                if (response.status === 401) {
+                    console.log("refresh token failed --> logging out")
+                    c_logout();
+                    return null;
+                }
+            }
         }
         try {
             const jsonData = await response.json();
-            return jsonData; 
+            return jsonData;
         } catch (error) {
-            return response;
+            return null;
         }
     }
 
+    
+
     const fetchWithAuth = async (endpoint) => {
+        if (!loggedIn) {
+            console.log("not logged in --> returning null")
+            return null;
+        }
         const resp = await reqWithAuth(endpoint, "GET")
-        console.log(resp)
         return resp;
     };
     const postWithAuth = async (endpoint, data) => {

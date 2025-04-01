@@ -2,6 +2,9 @@ import { useState, useContext } from "react";
 import { AuthContext } from "../provider/AuthProvider";
 import { useNavigate, useLocation, Link } from "react-router-dom";
 
+import "../css/Login.css"
+import { useValidatePw } from "../helpers/ValidatePw";
+
 
 const Login = () => {
     const [user, setUser] = useState("");
@@ -11,15 +14,19 @@ const Login = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const { loginPwd } = useContext(AuthContext);
-    const { c_user, c_setUser } = useContext(AuthContext)
-    const { loggedIn } = useContext(AuthContext)
+    const { loggedIn } = useContext(AuthContext);
+    const { validate } = useValidatePw();
 
     const handleSubmit = async (e) => {
+        setError(null)
         e.preventDefault();
+        if (validate(password) !== null){
+            setError("Passwort ist falsch")
+            return
+        }
         console.log(user)
-        c_setUser(user)
         const err = await loginPwd(user, password);
-        if (err !== "") {
+        if (err !== null) {
             setError(err)
             console.log(error)
             return
@@ -37,14 +44,23 @@ const Login = () => {
 
 
     return (
-        <div>
-            {error}
-            <form onSubmit={handleSubmit}>
-                <input placeholder="Benutzername" onChange={(e) => setUser(e.target.value)} required />
-                <input type="password" placeholder="Passwort" onChange={(e) => setPassword(e.target.value)} required />
-                <button type="submit">Login</button>
-            </form>
-            Dont have an account? <Link to="/register">Register</Link>
+        <div className="login-container">
+            <div className="login-form">
+                <div className="title">
+                    Login
+                </div>
+                <div className="error">
+                    {error}
+                </div>
+                <form onSubmit={handleSubmit}>
+                    <input placeholder="Benutzername" onChange={(e) => setUser(e.target.value)} required />
+                    <input type="password" placeholder="Passwort" onChange={(e) => setPassword(e.target.value)} required />
+                    <button type="submit">Login</button>
+                </form>
+                <div>
+                    Dont have an account? <Link to="/register">Register</Link>
+                </div>
+            </div>
         </div>
     );
 };

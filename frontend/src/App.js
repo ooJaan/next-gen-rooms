@@ -8,29 +8,34 @@ import Register from './pages/Register';
 import Verify from './pages/Verify';
 import { Debug } from './pages/Debug';
 import Logout from './pages/Logout';
+import RoomEdit from './pages/RoomEdit';
+import Users from './pages/Users';
+import ChangePw from './pages/ChangePw.js';
 
 import { AuthProvider } from "./provider/AuthProvider";
 import { ProtectedRoute } from "./provider/ProtectedRoute"
+import AdminRoute from "./provider/AdminRoute.js"
 
 const App = () => {
   return (
     <AuthProvider>
       <Router>
         <Routes>
-          <Route path="/" element={<BaseLayout title="home"></BaseLayout>} />
-          <Route path="/login" element={<BaseLayout title="Login" content={<Login />} />} />
+          <Route path="/login" element={<Login />} />
           <Route path="/logout" element={<Logout />} />
-          <Route path="/register" element={<BaseLayout title="Register" content={<Register />} />} />
-          <Route path="/verify" element={<BaseLayout title="Verify" content={<Verify />} />} />
-          <Route path="/debug" element={<BaseLayout title="debug" content={<Debug/>}></BaseLayout>} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/verify" element={<Verify />} />
           <Route element={<ProtectedRoute />}>
             <Route path="/" element={<BaseLayout title="Room List" content={<RoomList></RoomList>}> </BaseLayout>} />
-            <Route path="/overview/:id" element={<BaseLayout title="Room List" content={<RoomOverview></RoomOverview>}> </BaseLayout>} />
-            <Route path="/debug" element={<BaseLayout title="debug" content={<Debug/>}></BaseLayout>} />
-            <Route path="/users" element={<BaseLayout title="debug" content={<Users/>}></BaseLayout>} />
+            <Route path="/change-pw" element={<ChangePw />} />
+            <Route path="/overview/:id" element={<RoomOverview></RoomOverview>} />
+            <Route path="/debug" element={<BaseLayout title="debug" content={<Debug />}></BaseLayout>} />
+            <Route element={<AdminRoute />}>
+              <Route path="/users" element={<BaseLayout title="Users" content={<Users />}></BaseLayout>} />
+              <Route path="/edit/:id" element={<BaseLayout title="Edit" content={<RoomEdit />} />} />
+            </Route>
           </Route>
           <Route path="/list-dev" element={<BaseLayout title="Room List" content={<RoomList></RoomList>}> </BaseLayout>} />
-          <Route path="/overview/:id" element={<BaseLayout title="Room List" content={<RoomOverview></RoomOverview>}> </BaseLayout>} />
         </Routes>
       </Router>
     </AuthProvider>

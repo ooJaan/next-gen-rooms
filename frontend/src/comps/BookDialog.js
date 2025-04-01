@@ -1,5 +1,9 @@
 import React, { useState, useEffect, useContext } from "react";
 import { AuthContext } from "../provider/AuthProvider";
+import { RoomContext } from "../provider/RoomStatus.tsx";
+
+import Modal from '../comps/Modal';
+
 
 
 import { useApi } from "../helpers/api";
@@ -8,44 +12,47 @@ import config from "../config";
 
 
 
-const BookingDialog = ({ roomData = null }) => {
-    const {c_userId } = useContext(AuthContext);
+const BookingDialog = ({ roomData = null, setClosed, modalClosed }) => {
+
+    const closeModal = () => {
+        setClosed(true)
+    };
+    return (
+        <Modal
+            content={<ModalContent roomData={roomData} setClosed={setClosed}/>}
+            setClosed={setClosed}
+            onClose={closeModal}
+            closed={modalClosed}
+        />
+    )
+}
+const ModalContent = ({ roomData = null, setClosed }) => {
+
+    const { c_userId } = useContext(AuthContext);
     const [loading, setLoading] = useState(true);
-    const [rooms, setRooms] = useState({});
     const [selectValue, setSelectValue] = useState({});
     const [error, setError] = useState(null)
     const [startTime, setStartTime] = useState("");
     const [startDate, setStartDate] = useState("");
     const [endTime, setEndTime] = useState("");
+    const [attendees, setAttendees] = useState(0);
     const [buttonDisabled, setButtonDisabled] = useState(false)
     const { fetchWithAuth, postWithAuth } = useApi();
+    const { rooms, roomLoading, updateAll} = useContext(RoomContext);
+
+    console.log("re rendering modal")
 
 
-
-    // if no room is set we want to display a select #TODO
     // TODO a booking cannot be over a day
-    useEffect(() => {
-        const fetchRooms = async () => {
-            try {
-                const response = await fetchWithAuth(`room`); // Replace with actual endpoint
-                setRooms(response); // Store the response in state
-                setLoading(false);
-            } catch (err) {
-                console.error("Error fetching rooms:", err);
-                setLoading(false);
-            }
-        };
-        if (!roomData) {
-            fetchRooms();
-        }
-    }, []);
     useEffect(() => {
         // runs at start
         const now = new Date();
         const formattedDate = formatDate(now);
-        const formattedTime = formatTime(now)
+        const formattedTime = formatTime(now);
+        const formattedEndTime = formatTime(new Date(now.getTime() + 15 * 60 * 1000));
         setStartDate(formattedDate);
         setStartTime(formattedTime);
+        setEndTime(formattedEndTime);
     }, []);
 
     useEffect(() => {
@@ -57,12 +64,16 @@ const BookingDialog = ({ roomData = null }) => {
             setError("no start or endtime")
             return
         }
-        if (now > startTime){
+        if (now > startTime) {
             setError("kann keinen raum rückwirkend buchen")
             return
         }
-        if (start > end ){
+        if (start > end) {
             setError("start muss vor dem Ende sein")
+            return
+        }
+        if (attendees > roomData.capacity) {
+            setError(`Raum kann nicht mehr als ${roomData.capacity} Personen haben`)
             return
         }
         const durationMin = (end - start) / (1000 * 60)
@@ -71,13 +82,15 @@ const BookingDialog = ({ roomData = null }) => {
             setError(`Raum kann nicht länger als ${roomData.maxDuration}min gebucht werden`)
             return
         }
-        setError(null)
+        if (error !== null) {
+            setError(null);
+        }
 
-    }, [startTime, endTime])
+    }, [startTime, endTime, attendees])
 
     useEffect(() => {
         console.log("error has changed to", error)
-        if(error === null) {
+        if (error === null) {
             setButtonDisabled(false);
         }
         else {
@@ -102,33 +115,27 @@ const BookingDialog = ({ roomData = null }) => {
     }
 
 
-
-    const handleSartTimeChange = (event) => {
-        setStartTime(event.target.value)
-    }
-    const handleStartDateChange = (event) => {
-        setStartDate(event.target.value)
-    }
-    const handleEndTimeChange = (event) => {
-        setEndTime(event.target.value)
-    }
-
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         const startISO = StringToDate(startDate, startTime).toISOString()
         const endISO = StringToDate(startDate, endTime).toISOString()
+        console.log(roomData)
         var req = {
-            "roomId": roomData.id,
+            "roomId": roomData.roomId,
             "userId": c_userId,
+            "attendees": attendees,
             "startDate": startISO,
             "endDate": endISO
         }
-        console.log(JSON.stringify(req)) 
-        postWithAuth("booking/create", req)
+        console.log(JSON.stringify(req))
+        const resp = await postWithAuth("booking/create", req)
+        console.log(resp)
+        if (!resp["error"]) {
+            setClosed(true)
+            updateAll()
+        } else {
+            setError(resp["error"])
+        }
     };
-    const handleSelectChange = (event) => {
-        setSelectValue(event.target.value);
-    };
-
 
 
     return (
@@ -136,7 +143,7 @@ const BookingDialog = ({ roomData = null }) => {
             <h2>Raum buchen</h2>
             <div className="book-form">
                 {roomData === null ? (
-                    <select value={selectValue} onChange={handleSelectChange}>
+                    <select value={selectValue} onChange={(e) => setSelectValue(e.target.value)}>
                         {loading ? (
                             <option>Loading...</option>
                         ) : (
@@ -148,33 +155,43 @@ const BookingDialog = ({ roomData = null }) => {
                 ) : (
                     <p>{roomData.number} - {roomData.name}</p>
                 )}
+                <div className="error">
+                    {error}
 
-                {error}
+                </div>
 
                 <input
                     type="date"
                     id="start-date"
                     value={startDate}
                     min={startDate}
-                    onChange={handleStartDateChange}
+                    onChange={(e) => setStartDate(e.target.value)}
                 />
                 <div>
-
                     <input
                         type="time"
                         id="start-time"
                         value={startTime}
                         step={config.minutenStep}
                         min={startTime}
-                        onChange={handleSartTimeChange}
+                        onChange={(e) => setStartTime(e.target.value)}
+
                     />
                     <input
                         type="time"
                         id="end-time"
                         value={endTime}
                         step={config.minutenStep}
-                        onChange={handleEndTimeChange}
+                        onChange={(e) => setEndTime(e.target.value)}
                         min={startTime}
+                    />
+                    <input
+                        type="namber"
+                        id="attendees"
+                        value={attendees}
+                        onChange={(e) => setAttendees(e.target.value)}
+                        min={0}
+                        max={roomData.capacity}
                     />
                 </div>
                 <button

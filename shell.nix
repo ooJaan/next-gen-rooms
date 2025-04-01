@@ -10,4 +10,8 @@ in pkgs.mkShell {
       python-pkgs.flask-socketio
     ]))
   ];
+  shellHook = ''
+    cd frontend
+    yarn start
+  '';
 }

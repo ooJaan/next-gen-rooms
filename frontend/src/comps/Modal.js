@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import "../css/Modal.css";
 import "../css/App.css";
 
-const Modal = ({ content, modalData, closed, onClose }) => {
+const Modal = ({ content, closed, onClose }) => {
     useEffect(() => {
         const handleKeyDown = (event) => {
             if (event.key === "Escape") {

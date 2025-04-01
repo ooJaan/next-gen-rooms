@@ -1,0 +1,18 @@
+@media (max-width: 1050px) {
+
+    .t-cap,
+    .t-assets,
+    .t-nr {
+        display: none;
+    }
+
+    .room-edit {
+        flex-direction: column;
+        justify-content: flex-start !important;
+    }
+
+    .room-edit>div {
+        flex-grow: 0 !important;
+        flex-basis: auto !important;
+    }
+}

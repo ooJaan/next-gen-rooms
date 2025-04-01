@@ -1,0 +1,26 @@
+.login-container{
+    display: flex;
+    height: 100vh;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+}
+
+.login-form{
+    border-radius: var(--border-radius);
+    align-self: center; 
+    position: absolute;
+    padding: 20px;
+    min-width: 350px;
+    min-height: 200px;
+    box-shadow: var(--shadow-bottom), var(--shadow-top);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 10px;
+}
+.login-form form {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}

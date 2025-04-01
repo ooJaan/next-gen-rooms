@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  pg_primary:
+    image: postgres:16
+    container_name: pg_primary
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: mydb
+    volumes:
+      - pg_primary_data:/var/lib/postgresql/data
+      - ./primary_conf:/etc/postgresql
+    command: >
+      bash -c "cp /etc/postgresql/pg_hba.conf /var/lib/postgresql/data/pg_hba.conf &&
+      cp /etc/postgresql/postgresql.conf /var/lib/postgresql/data/postgresql.conf &&
+      chown postgres:postgres /var/lib/postgresql/data/pg_hba.conf /var/lib/postgresql/data/postgresql.conf &&
+      exec docker-entrypoint.sh postgres"
+    ports:
+      - "5001:5432"
+    networks:
+      - pg_network
+
+  pg_replica:
+    image: postgres:16
+    container_name: pg_replica
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: mydb
+    volumes:
+      - ./backup_conf/postgresql.conf:/etc/postgresql/postgresql.conf
+    command: >
+      bash -c "
+      rm -rf /var/lib/postgresql/data/*
+      && PGPASSWORD=postgres pg_basebackup -h pg_primary -D /var/lib/postgresql/data -U postgres -Fp -R
+      && cp /etc/postgresql/postgresql.conf /var/lib/postgresql/data/postgresql.conf
+      && chown -R postgres:postgres /var/lib/postgresql/data
+      && exec docker-entrypoint.sh postgres"
+    depends_on:
+      - pg_primary
+    ports:
+      - "5002:5432"
+    networks:
+      - pg_network
+
+volumes:
+  pg_primary_data:
+
+networks:
+  pg_network:
