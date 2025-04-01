@@ -19,7 +19,7 @@ const Register = () => {
     const Submit = async (e) => {
         e.preventDefault()
         if (password !== password1) {
-            setError("passwords dont match")
+            setError("Die Passwörter stimmen nicht überein!")
             setPassword("")
             setPassword1("")
             return
@@ -52,7 +52,7 @@ const Register = () => {
         }
         catch (error) {
             console.error("Register error:", error);
-            setError("Register error:", error);
+            setError("Registrierungs fehler:", error);
         }
 
 

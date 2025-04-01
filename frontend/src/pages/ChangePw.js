@@ -21,11 +21,11 @@ const ChangePw = () => {
             return
         }
         if (newPwd !== newPwd2) {
-            setError("Passwörter sind unterschiedlich")
+            setError("Die Passwörter stimmen nicht überein!")
             return
         }
         if (newPwd === oldPwd) {
-            setError("Passwörter sind gleich")
+            setError("Das neue Passwort muss sich vom alten Passwort unterscheiden")
             return
         }
         setError(validate(oldPwd))
@@ -67,7 +67,7 @@ const ChangePw = () => {
                 <form onSubmit={submit}>
                     <input type="password" placeholder="Altes Passwort" onChange={(e) => setOldPwd(e.target.value)} required />
                     <input type="password" placeholder="Neues Passwort" onChange={(e) => setNewPwd(e.target.value)} required />
-                    <input type="password" placeholder="Neues Passwort widerhohlen" onChange={(e) => setNewPwd2(e.target.value)} required />
+                    <input type="password" placeholder="Neues Passwort wiederhohlen" onChange={(e) => setNewPwd2(e.target.value)} required />
                     <button type="submit" disabled={error !== null}>Passort Ändern</button>
                 </form>
             </div>

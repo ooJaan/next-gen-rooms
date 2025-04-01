@@ -21,7 +21,7 @@ const Login = () => {
         setError(null)
         e.preventDefault();
         if (validate(password) !== null){
-            setError("Passwort ist falsch")
+            setError("Das Passwort ist falsch!")
             return
         }
         console.log(user)

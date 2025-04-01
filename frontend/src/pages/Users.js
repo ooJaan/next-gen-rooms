@@ -77,7 +77,7 @@ const Users = () => {
         setUsers(updatedUsers)
     }
     if(loading){
-        return "loading..."
+        return "Lade..."
     }
 
 
@@ -109,7 +109,7 @@ const Users = () => {
                                 onClick={() => deleteUser(id)}
                                 disabled={id === c_userId ? true: false}
                             >
-                                Delete
+                                Löschen
                             </button>
                         </td>
                     </tr>

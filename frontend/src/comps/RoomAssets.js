@@ -9,9 +9,6 @@ import MultiSelect from '../comps/MultiSelect.js';
 import Table from './Table.js';
 import { useApi } from '../helpers/api.js';
 
-import g_allAssets from "../data/all_assets.json"
-import g_usedAssets from "../data/used_assets.json"
-
 const AssetsToOptions = (allAssets, usedAssets) => {
     //console.log(allAssets, usedAssets)
     var options = [];

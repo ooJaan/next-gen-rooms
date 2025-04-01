@@ -15,10 +15,10 @@ const Verify = () => {
     const { loginPwd } = useContext(AuthContext);
 
     if (c_user === null | c_password === null) {
-        setError("no username set, are you logged in or registered correctly?")
+        setError("Kein Username gesetzt, sind Sie bereits eingelogged?")
         return (
             <div>
-                <h1>No username set. did you register correctly?</h1>
+                <h1>Kein Username gesetzt, sind Sie bereits eingelogged?</h1>
             </div>
         )
     }
