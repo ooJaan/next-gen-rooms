@@ -46,7 +46,6 @@ export const AuthProvider = ({ children }) => {
         break
       default:
         setLoggedIn(false)
-        localStorage.clear()
         console.log("token is invalid --> logging out, status: ", status)
     }
     setLoggedIn(true)
@@ -90,6 +89,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const cleanup = () => {
+    localStorage.clear()
     setToken(null);
     c_setUser(null);
     setRefreshToken(null);
@@ -127,7 +127,7 @@ export const AuthProvider = ({ children }) => {
         localStorage.setItem("token", data.accessToken)
         localStorage.setItem("refreshToken", data.refreshToken)
         setRefreshToken(data.refreshToken)
-        return true
+        return data.accessToken
       } else {
         console.log("refresh token failed --> logging out")
         return false

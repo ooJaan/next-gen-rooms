@@ -26,27 +26,28 @@ export const useApi = () => {
         }
 
         let response = await fetch(url, req);
-        if (!response.ok) {
+        
+        if (response.status === 401) {
+            console.log("unauthorized --> trying to refresh the token")
+            let newToken = await refreshAccessToken();
+            req.headers["Authorization"] = `Bearer ${newToken}`;
+            console.log("trying again with new token: ", newToken)
+            let resp = await fetch(url, req);
+            if (resp.status === 401) {
+                console.log("refresh token failed --> logging out")
+                c_logout();
+                return null;
+            }
+            return resp.json()
+        }
+        else if (!response.ok) {
             throw {
                 name: 'ApiError',
                 status: response.status,
                 statusText: response.statusText,
                 message: `HTTP error! status: ${response.status} - ${response.statusText}`
             };
-                
-        }
-        if (refreshIfFailed) {
-            if (response.status === 401) {
-                console.log("unauthorized --> trying to refresh the token")
-                await refreshAccessToken();
-                req.headers["Authorization"] = `Bearer ${token}`;
-                response = await fetch(url, req);
-                if (response.status === 401) {
-                    console.log("refresh token failed --> logging out")
-                    c_logout();
-                    return null;
-                }
-            }
+                    
         }
         try {
             const jsonData = await response.json();
