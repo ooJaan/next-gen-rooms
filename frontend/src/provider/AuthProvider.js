@@ -5,8 +5,7 @@ import { useApi } from "../helpers/api";
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const prevLoggedIn = useRef(localStorage.getItem("token") !== null);
-  const [loggedIn, setLoggedIn ] = useState(prevLoggedIn.current)
+  const [loggedIn, setLoggedIn ] = useState(null)
   const [token, setToken] = useState(localStorage.getItem("token") || null);
   const [c_user, c_setUser] = useState(localStorage.getItem("user") || null);
   const [c_userId, c_setUserId] = useState(localStorage.getItem("userId") || null);
@@ -18,71 +17,43 @@ export const AuthProvider = ({ children }) => {
 
   console.log("AuthProvider re render: ", loggedIn, token, c_user, c_userId, c_role, refreshToken)
   useEffect(() => {
-    if (token && c_user) {
-      login_token(c_user, token, refreshToken)
-    }
+    login_token(c_user, token, refreshToken)
   },[]);
-  useEffect(() => {
-    console.log("c_user has changed to ", c_user)
-    if (c_user) {
-      localStorage.setItem("user", c_user); // Persist to localStorage
-    } else {
-      localStorage.removeItem("user");
-    }
-  }, [c_user]);
-  useEffect(() => {
-    console.log("c_userId has changed to ", c_userId)
-    if (c_userId) {
-      localStorage.setItem("userId", c_userId); // Persist to localStorage
-    } else {
-      localStorage.removeItem("userId");
-
-    }
-  }, [c_userId]);
-  useEffect(() => {
-    console.log("token has changed to ", token)
-
-    if (token) {
-      localStorage.setItem("token", token); // Persist to localStorage
-    } else {
-      localStorage.removeItem("token");
-    }
-  }, [token]);
-
-  useEffect(() => {
-    console.log("refreshToken has changed to ", refreshToken)
-
-    if (refreshToken) {
-      localStorage.setItem("refreshToken", refreshToken); // Persist to localStorage
-    } else {
-      localStorage.removeItem("refreshToken");
-    }
-  }, [refreshToken]);
-  useEffect(() => {
-    console.log("loggedIn has changed to ", loggedIn)
-    prevLoggedIn.current = loggedIn
-  }, [loggedIn]);
+  
 
   const login_token = async (username, newToken, newRefreshToken) => {
+    console.log("logging in with token: ", username, newToken, newRefreshToken)
     if (username === null | newToken === null | newRefreshToken=== null) {
+      // no token set
       setLoggedIn(false)
       return;
     }
-    if (!await validateToken(newToken)){
-      console.log("token invalid --> logging out")
-      setLoggedIn(false)
-      return
+    let status = await validateToken(newToken)
+    switch (status) {
+      case 200:
+        console.log("token is already valid --> logging in")
+        setToken(newToken)
+        localStorage.setItem("token", newToken)
+        setRefreshToken(newRefreshToken)
+        localStorage.setItem("refreshToken", newRefreshToken)
+        break
+      case 401:
+        console.log("token invalid --> trying to refresh")
+        if (!await refreshAccessToken()) {
+          console.log("refresh token failed --> logging out")
+          setLoggedIn(false)
+        }
+        break
+      default:
+        setLoggedIn(false)
+        localStorage.clear()
+        console.log("token is invalid --> logging out, status: ", status)
     }
-    console.log("logging in with token: ", username, newToken, newRefreshToken)
-    bulkSet(username, newToken, newRefreshToken)
-    console.log("setting loggedIn")
-  };
-  const bulkSet = (username, newToken, newRefreshToken) => {
     setLoggedIn(true)
-    setToken(newToken);
-    setRefreshToken(newRefreshToken);
-    c_setUser(username);
-  }
+    // at this point the token is valid and set correctly
+    localStorage.setItem("user", username)
+    c_setUser(username)
+  };
 
   const validateToken = async (newToken) => {
     console.log("validating token: ", newToken)
@@ -94,21 +65,7 @@ export const AuthProvider = ({ children }) => {
         method: "POST",
     }
     const resp = await fetch(url, req)
-    if (resp.status !== 200) {
-        if (resp.status === 401) {
-            if (await refreshAccessToken() === true) {
-                return true
-            } else {
-                console.log("refresh token failed --> logging out")
-                logout();
-                return false
-            }
-        }
-        console.log("token invalid --> logging out")
-        logout();
-        return false
-    }
-    return true
+    return resp.status
 }
 
 
@@ -151,12 +108,11 @@ export const AuthProvider = ({ children }) => {
   };
 
   const refreshAccessToken = async () => {
-    console.log(`refreshing the token, accessToken: ${token}, refreshToken: ${refreshToken}`)
+    console.log("refreshing the token")
     if (!refreshToken) {
       console.log("no token set --> logging out")
       return false;
     }
-
     try {
       const response = await fetch(`${config.apiUrl}/auth/refresh`, {
         method: "POST",
@@ -166,8 +122,11 @@ export const AuthProvider = ({ children }) => {
 
       const data = await response.json();
       if (response.ok) {
-        console.log(`refresh token successful, new accessToken: ${data.accessToken}, new refreshToken: ${data.refreshToken}`)
-        await login_token(c_user, data.accessToken, data.refreshToken);
+        console.log("refresh token successful")
+        setToken(data.accessToken)
+        localStorage.setItem("token", data.accessToken)
+        localStorage.setItem("refreshToken", data.refreshToken)
+        setRefreshToken(data.refreshToken)
         return true
       } else {
         console.log("refresh token failed --> logging out")
@@ -206,7 +165,9 @@ export const AuthProvider = ({ children }) => {
         c_role,
         c_password,
         c_setPassword,
-        loggedIn, setLoggedIn
+        loggedIn, setLoggedIn,
+        setToken
+
       }}>
       {children}
     </AuthContext.Provider>

@@ -13,7 +13,7 @@ export const Debug = () => {
     const [ endpoint, setEndpoint] = useState("");
     const [ data, setData] = useState("");
     const { rooms, status, getAllstatus } = useContext(RoomContext);
-    const { refreshAccessToken } = useContext(AuthContext);
+    const { refreshAccessToken, setToken } = useContext(AuthContext);
 
     const refreshToken = async (e) => {
         e.preventDefault();
@@ -30,9 +30,17 @@ export const Debug = () => {
         .catch((err) => console.error(err));
         console.log(data)
     }
+
+    const setInvalidToken = async (e) => {
+        e.preventDefault();
+        setToken("invalid")
+        localStorage.setItem("token", "invalid")
+        console.log("token set to invalid")
+    }
     return (
         <div>
             <button onClick={(e) => refreshAccessToken(e)}>Refresh Access Token</button>
+            <button onClick={(e) => setInvalidToken(e)}>Set Invalid Token</button>
             <pre>{JSON.stringify(status, null, 2)}</pre>
             <form onSubmit={handleSubmit}>
                 <input type="text" onChange={(e) => setEndpoint(e.target.value)}></input>
