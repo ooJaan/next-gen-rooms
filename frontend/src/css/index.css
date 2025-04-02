@@ -59,6 +59,11 @@ button:hover {
   background-color: var(--color-tertiary-hover);
 }
 
+.offline-container {
+  align-items: center;
+  margin:  auto;
+  text-align: center;
+}
 #root {
   display: flex;
   height: calc(100vh - 10px);
