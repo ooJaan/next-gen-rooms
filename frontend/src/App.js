@@ -34,7 +34,7 @@ const App = () => {
             
             {/* Protected routes still work as before */}
             <Route element={<ProtectedRoute />}>
-              <Route path="/" element={<BaseLayout title="Room List" content={<RoomList />} />} />
+              <Route path="/" element={<BaseLayout title="Räume" content={<RoomList />} />} />
               <Route path="/change-pw" element={<ChangePw />} />
               <Route path="/overview/:id" element={<RoomOverview />} />
               <Route path="/debug" element={<BaseLayout title="debug" content={<Debug />} />} />
