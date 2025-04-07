@@ -37,7 +37,7 @@ const Login = () => {
     if (loggedIn) {
         return (
             <div>
-                <h1>Already logged in <Link to="/logout">Logout?</Link></h1>
+                <h1>Bereits eingelogged <Link to="/logout">Ausloggen?</Link></h1>
             </div>
         )
     }
@@ -46,6 +46,7 @@ const Login = () => {
     return (
         <div className="login-container">
             <div className="login-form">
+                <img src="logo.svg" className="auth-logo"/>
                 <div className="title">
                     Login
                 </div>
@@ -58,7 +59,7 @@ const Login = () => {
                     <button type="submit">Login</button>
                 </form>
                 <div>
-                    Dont have an account? <Link to="/register">Register</Link>
+                    Sie haben noch keinen Account? <Link to="/register" className="login-link">Registrieren</Link>
                 </div>
             </div>
         </div>
