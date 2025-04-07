@@ -1,5 +1,5 @@
 import { useState, useContext } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, Link } from "react-router-dom";
 import config from "../config";
 import { AuthContext } from "../provider/AuthProvider";
 import '../css/Login.css'
@@ -60,7 +60,8 @@ const Register = () => {
     return (
         <div className="login-container">
             <div className="login-form">
-                <h1>Registrieren</h1>
+                <img src="logo.svg" className="auth-logo"/>
+                <h1 className="title">Registrieren</h1>
                 {error}
                 <form onSubmit={Submit}>
                     <input placeholder="Username" onChange={(e) => setLocalUser(e.target.value)} required />
@@ -69,6 +70,9 @@ const Register = () => {
                     <input type="password" placeholder="Confirm Password" minlenght="4" value={password1} onChange={(e) => setPassword1(e.target.value)} required />
                     <button type="submit">Registrieren</button>
                 </form>
+                <div>
+                    Sie haben bereits einen Account? <Link to="/login" className="login-link">Login</Link>
+                </div>
             </div>
         </div>
     )
