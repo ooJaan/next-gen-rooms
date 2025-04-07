@@ -57,7 +57,7 @@ const RoomList =  ({}) => {
         { 
             key: 'status', 
             label: 'Status',
-            sortable: false,
+            sortable: true,
             render: (row) => (
                 <div className={`status-${status[row.roomId]?.type} t-status`} style={{display: 'flex', alignItems: 'center', height: '100%', margin: 'auto'}}>
                     <svg height="20" width="20">
@@ -77,10 +77,10 @@ const RoomList =  ({}) => {
         { 
             key: 'type', 
             label: 'Typ',
-            sortable: true,
+            sortable: false,
             render: (row) => types[row.typeId]?.name || 'Loading...'
         },
-        { key: 'equipment', label: 'Austattung', sortable: true },
+        { key: 'equipment', label: 'Austattung', sortable: false },
         { 
             key: 'booking', 
             label: 'Booking',
