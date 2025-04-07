@@ -68,7 +68,7 @@ const ChangePw = () => {
                     <input type="password" placeholder="Altes Passwort" onChange={(e) => setOldPwd(e.target.value)} required />
                     <input type="password" placeholder="Neues Passwort" onChange={(e) => setNewPwd(e.target.value)} required />
                     <input type="password" placeholder="Neues Passwort wiederhohlen" onChange={(e) => setNewPwd2(e.target.value)} required />
-                    <button type="submit" disabled={error !== null}>Passort Ändern</button>
+                    <button type="submit" disabled={error !== null}>Passwort Ändern</button>
                 </form>
             </div>
 
