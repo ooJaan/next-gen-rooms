@@ -3,6 +3,7 @@ import '../css/classes.css';
 import { Link, useLocation } from "react-router-dom";
 import React, { useContext } from "react";
 import { AuthContext } from "../provider/AuthProvider";
+import NavBar from './NavBar';
 
 
 const UserSection = ({loggedIn, user}) => {
@@ -17,7 +18,6 @@ const UserSection = ({loggedIn, user}) => {
     }
 }
 
-
 const BaseLayout = ({ content, title }) => {
     const { c_user } = useContext(AuthContext);
     const { loggedIn } = useContext(AuthContext);
@@ -25,19 +25,7 @@ const BaseLayout = ({ content, title }) => {
 
     return (
         <div className="wrapper">
-            <div className="navbar flex-horizontal">
-                {location.pathname !== "/" && (
-                    <Link to="/">
-                        <img src="/back.svg" alt="logo" style={{width: '40px', height: '40px'}} />
-                    </Link>
-                )}
-                {location.pathname === "/" && <div style={{width: '40px'}}></div>}
-                <div className="title">
-                    { title }
-                </div>
-                <div></div>
-                <UserSection loggedIn={loggedIn} user={c_user}/>
-            </div>
+            <NavBar title={title}/>
             <div className="content">
                 { content }
             </div>

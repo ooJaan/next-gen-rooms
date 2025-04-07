@@ -57,7 +57,7 @@ const RoomList =  ({}) => {
     return (
         <div>
             {c_role === "Administrator" ? (
-                <button onClick={openRoomDialog}>New Room</button>
+                <button onClick={openRoomDialog}>Neue Raum</button>
             ) : null}
             <Table
                 head={
