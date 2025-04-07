@@ -23,13 +23,13 @@ const NavBar = ({ content, title }) => {
 
 
     return (
-        <div class="nav-container">
+        <div className="nav-container">
             {location.pathname !== "/" && (
                 <Link className='back' to="/">
                     <img src="/back.svg" alt="logo" style={{width: '40px', height: '40px'}} />
                 </Link>
             )}
-            <div class="room-container">
+            <div className="room-container">
             <h1>{title}</h1>
             <img src="/logo.svg" className="nav-logo"/>
             </div>

@@ -57,14 +57,14 @@ const RoomList =  ({}) => {
     return (
         <div>
             {c_role === "Administrator" ? (
-                <button onClick={openRoomDialog}>Neue Raum</button>
+                <button onClick={openRoomDialog}>Neuer Raum</button>
             ) : null}
             <Table
                 head={
                     <tr>
                         <th className='t-status'></th>
                         <th className='t-name'>Name</th>
-                        <th className='t-nr'>RaumNr</th>
+                        <th className='t-nr'>Raumnummer</th>
                         <th className='t-cap'>Kapazität</th>
                         <th className='t-type'>Typ</th>
                         <th className="grow t-assets">Austattung</th>
@@ -81,7 +81,8 @@ const RoomList =  ({}) => {
                                 </svg>
                             </div>
                         </td>
-                        <td className='t-name'><Link to={`/overview/${row.roomId}`}>{row.name}</Link></td>
+                        
+                        <td className='t-name'><Link className="table-data-name" to={`/overview/${row.roomId}`}><div>{row.name}</div></Link></td>
                         <td className='t-nr'>{row.number}</td>
                         <td className='t-cap'>{row.capacity}</td>
                         <td className='t-type'>

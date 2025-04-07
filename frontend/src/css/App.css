@@ -110,3 +110,14 @@
   font-size: 1.1rem;
   padding: 7px;
 }
+
+.table-data-name{
+  font-weight: bold;
+  color: var(--color-secondary);
+  text-decoration: none;
+}
+
+.table-data-name:hover{
+  text-decoration: underline;
+  cursor: pointer;
+}
