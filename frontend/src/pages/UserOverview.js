@@ -28,6 +28,34 @@ const UserOverview = () => {
            .then(() => setLoading(false))
     }, [loggedIn, c_userId])
 
+    const columns = [
+        { 
+            key: 'roomName', 
+            label: 'Room',
+            sortable: true,
+            render: (row) => rooms[row.roomId]?.name || 'Loading...'
+        },
+        { key: 'date', label: 'Datum', sortable: true },
+        { key: 'startTime', label: 'Von', sortable: true },
+        { key: 'endTime', label: 'Bis', sortable: true },
+        { 
+            key: 'actions', 
+            label: 'Löschen',
+            sortable: false,
+            render: (row) => (
+                <button onClick={() => deleteBooking(row.id)}>Delete</button>
+            )
+        }
+    ];
+
+    const tableData = Object.entries(bookings).map(([id, booking]) => ({
+        id,
+        roomId: booking.roomId,
+        date: formatDate(booking.start),
+        startTime: formatTime(booking.start),
+        endTime: formatTime(booking.end)
+    }));
+
     if (loading) return <Loading />
 
     return (
@@ -43,9 +71,8 @@ const UserOverview = () => {
                         <th>Löschen</th>
                     </tr>
                 }
-                body={Object.entries(bookings).map(([id, booking]) => (
-                    <pre>{id} {JSON.stringify(booking)}</pre>
-                ))}
+                data={tableData}
+                columns={columns}
             />
         </div>
     )

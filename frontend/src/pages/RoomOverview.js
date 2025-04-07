@@ -15,8 +15,43 @@ const RoomOverview = () => {
     const { formatDate, formatTime } = useDate();
     const navigate = useNavigate()
 
-    
-    
+    const equipmentColumns = [
+        { key: 'name', label: 'Name', sortable: true },
+        { key: 'count', label: 'Stück', sortable: true }
+    ];
+
+    const bookingColumns = [
+        { key: 'date', label: 'Datum', sortable: true },
+        { key: 'startTime', label: 'Von', sortable: true },
+        { key: 'endTime', label: 'Bis', sortable: true },
+        { 
+            key: 'username', 
+            label: 'User',
+            sortable: true,
+            render: (row) => users[row.userId]?.username || 'Loading...'
+        }
+    ];
+
+    const equipmentData = [
+        ...rooms[id].roomAsset.map(data => ({
+            name: !assetLoading && assets[data.assetId] ? assets[data.assetId].name : 'Loading...',
+            count: data.assetCount
+        })),
+        ...Object.values(typeAssets)
+            .filter(data => data.typeId === rooms[id].typeId)
+            .map(data => ({
+                name: assets[data.assetId].name,
+                count: data.assetCount
+            }))
+    ];
+
+    const bookingData = rooms[id].bookings.map(booking => ({
+        date: formatDate(booking.start),
+        startTime: formatTime(booking.start),
+        endTime: formatTime(booking.end),
+        userId: booking.userId
+    }));
+
     if (typeAssetsLoading || roomLoading || userLoading || assetLoading || statusLoading) {
         return <Loading />
     }
@@ -48,26 +83,8 @@ const RoomOverview = () => {
                                     <th>Stück</th>
                                 </tr>
                             }
-                            body={[
-                                ...rooms[id].roomAsset.map((data, index) => (
-                                    <tr key={data.id}>
-                                        {!assetLoading && assets[data.assetId] ? (
-                                            <td>{assets[data.assetId].name}</td>
-                                        ) : (
-                                            <td>Loading...</td>
-                                        )}
-                                        <td>{data.assetCount}</td>
-                                    </tr>
-                                )),
-                                ...Object.values(typeAssets).map((data, index) => 
-                                    data.typeId === rooms[id].typeId ? (
-                                        <tr key={index}>
-                                            <td>{assets[data.assetId].name}</td>    
-                                            <td>{data.assetCount}</td>
-                                        </tr>
-                                    ) : null
-                                )
-                            ]}
+                            data={equipmentData}
+                            columns={equipmentColumns}
                         />
                     </>
                     ) : (
@@ -86,18 +103,8 @@ const RoomOverview = () => {
                                     <th>User</th>
                                 </tr>
                             }
-                            body={rooms[id].bookings.map((data, index) => (
-                                <tr key={data.id}>
-                                    <td>{formatDate(data.start)}</td>
-                                    <td>{formatTime(data.start)}</td>
-                                    <td>{formatTime(data.end)}</td>
-                                    {!userLoading && users[data.userId] ? (
-                                        <td>{users[data.userId].username}</td>
-                                    ) : (
-                                        <td>Loading...</td>
-                                    )}
-                                </tr>
-                            ))}
+                            data={bookingData}
+                            columns={bookingColumns}
                         />
                     ) : (
                         <h1>Loading...</h1>
