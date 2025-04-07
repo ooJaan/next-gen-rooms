@@ -9,6 +9,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import Table from '../comps/Table';
 import BookingDialog from '../comps/BookDialog';
 import NewRoom from '../comps/newRoom';
+import Loading from '../comps/Loading';
 import { useApi } from "../helpers/api";
 import { AuthContext } from '../provider/AuthProvider';
 import { RoomContext } from '../provider/RoomStatus.tsx';
@@ -17,7 +18,7 @@ const BuchungsButton = ({ openModal, raumData, raumnr, raumName }) => {
     const data={"nr": raumnr, "name": raumName}
     return (
         <div className="buchung">
-            <button onClick={() => openModal(raumData)} className="BuchenButton">Raum Buchen</button>
+            <button onClick={() => openModal(raumData)} className="BuchenButton">Raum buchen</button>
         </div>
     )
 }
@@ -49,7 +50,9 @@ const RoomList =  ({}) => {
     }
 
 
-    if (roomLoading) return <p>Loading...</p>;
+    if (roomLoading || typesLoading || statusLoading) {
+        return <Loading />
+    }
     if (error) return <p>{error}</p>;
     return (
         <div>
@@ -59,18 +62,25 @@ const RoomList =  ({}) => {
             <Table
                 head={
                     <tr>
-                        <th></th>
+                        <th className='t-status'></th>
                         <th className='t-name'>Name</th>
                         <th className='t-nr'>RaumNr</th>
                         <th className='t-cap'>Kapazität</th>
                         <th className='t-type'>Typ</th>
                         <th className="grow t-assets">Austattung</th>
-
+                        <th></th>
+                        <th></th>
                     </tr>
                 }
                 body={Object.entries(rooms).map(([key, row]) => (
                     <tr key={key} name={key}>
-                        <td className={!statusLoading ? `status-${status[key]?.type}` : ''}><div>●</div></td>
+                        <td className={`status-${status[key]?.type} t-status`}>
+                            <div style={{display: 'flex', alignItems: 'center', height: '100%', margin: 'auto'}}>
+                                <svg height="20" width="20">
+                                    <circle cx="10" cy="10" r="10" fill="currentColor" />
+                                </svg>
+                            </div>
+                        </td>
                         <td className='t-name'><Link to={`/overview/${row.roomId}`}>{row.name}</Link></td>
                         <td className='t-nr'>{row.number}</td>
                         <td className='t-cap'>{row.capacity}</td>
@@ -85,7 +95,9 @@ const RoomList =  ({}) => {
                         </td>
                         <td>
                             {c_role === "Administrator" ? (
-                                <button onClick={() => navigate(`/edit/${row.roomId}`)}>⚙</button>
+                                <div style={{display: 'flex', alignItems: 'center', height: '100%', cursor: 'pointer', color: '#ffddaa'}} onClick={() => navigate(`/edit/${row.roomId}`)}>
+                                    <img src="/settings.svg" alt="Settings" style={{width: '40px', height: '40px'}} />
+                                </div>
                             ):null}
                         </td>
                     </tr>

@@ -32,6 +32,7 @@ export const useModify = (roomId: string) => {
                         [resp.assetId]: {
                             "name": resp.name
                         }
+                        //TODO something goes wrong here
                     }
                     setAssets({ ...assets, ...newA })
                 }
@@ -66,18 +67,18 @@ export const useModify = (roomId: string) => {
         let resp;
         switch (method) {
             case methods.NEW:
-                console.log("creating new room asset: ", newAsset)
+                console.debug("creating new room asset: ", newAsset)
                 resp = await postWithAuth("room-assets", newAsset)
                 if (resp !== null) {
                     let newRooms = { ...rooms }
-                    console.log(`newRooms: ${JSON.stringify(newRooms)}, resp: ${JSON.stringify(resp)}`)
+                    console.debug(`newRooms: ${JSON.stringify(newRooms)}, resp: ${JSON.stringify(resp)}`)
                     newRooms[newAsset.roomId]["roomAsset"].push(resp)
                     setRooms(newRooms)
                 }
                 break;
             case methods.UPDATE:
                 //change roomid or stuff like that
-                console.log("patching room asset: ", newAsset)
+                console.debug("patching room asset: ", newAsset)
                 resp = await patchWithAuth(`room-assets/${id}`, newAsset)
                 if (resp) {
                     let newRooms = { ...rooms }
@@ -92,7 +93,7 @@ export const useModify = (roomId: string) => {
                 }
                 break;
             case methods.DELETE:
-                console.log("deleting room asset: ", id)
+                console.debug("deleting room asset: ", id)
                 resp = await deleteWithAuth(`room-assets/${id}`)
                 let newRooms = { ...rooms };
                 let assets = newRooms[newAsset.roomId].roomAsset
@@ -130,25 +131,36 @@ export const useModify = (roomId: string) => {
         console.log("resp: ", resp)
         if (resp) {
             let newRooms = { ...rooms }
-            newRooms[resp.id] = room
+            let newRoom = {
+                "roomId": resp.id,
+                "name": room.name,
+                "number": room.roomNumber,
+                "capacity": room.capacity,
+                "maxDuration": room.maxDuration,
+                "typeId": room.typeId,
+                "bookings": [],
+                "roomAsset": []
+            }
+            newRooms[resp.id] = newRoom
             await setRooms(newRooms)
         }
         return resp
     }
 
     const deleteRoom = async (roomId: string) => {
-        let resp = await deleteWithAuth(`room/${roomId}`)
-        if (resp) {
-            let newRooms = { ...rooms }
-            delete newRooms[roomId]
-            await setRooms(newRooms)
-        }
+        await deleteWithAuth(`room/${roomId}`)
+        let newRooms = { ...rooms }
+        delete newRooms[roomId]
+        await setRooms(newRooms)
     }
     const deleteBooking = async (bookingId: string) => {
         let resp = await deleteWithAuth(`booking/${bookingId}`)
         let newRooms = { ...rooms }
         let bookings = newRooms[roomId].bookings
         for (let i = 0; i < bookings.length; i++) {
+            if (bookings[i] === undefined){
+                continue
+            }
             if (bookings[i].id === bookingId) {
                 delete bookings[i]
                 break;
@@ -158,8 +170,31 @@ export const useModify = (roomId: string) => {
         setRooms(newRooms)
         getAllstatus()
     }
+
+    const createBooking = async (booking: object) => {
+        const resp =await postWithAuth("booking/create", booking)
+        console.log("created booking: ", resp)
+        let newRooms = { ...rooms }
+        const newBooking = {
+            "id": resp.bookingId,
+            "userId": booking.userId,
+            "roomId": null, // /room api endpoint also returns null (prevent re renders)
+            "start": booking.startDate,
+            "end": booking.endDate,
+        }
+        newRooms[resp.roomId].bookings.push(newBooking)
+        setRooms(newRooms)
+    }
     const changeRoomType = async (typeId: string, id: string) => {
 
     }
-    return { changeAsset, changeRoomAsset, changeRoomMetadata, deleteBooking, createRoom, deleteRoom }
+    return { 
+        changeAsset, 
+        changeRoomAsset, 
+        changeRoomMetadata, 
+        deleteBooking, 
+        createRoom, 
+        deleteRoom, 
+        createBooking 
+    }
 }

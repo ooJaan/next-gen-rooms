@@ -24,6 +24,7 @@ const BaseLayout = ({ content, title }) => {
     return (
         <div className="wrapper">
             <div className="navbar flex-horizontal">
+                <Link to="/">Home</Link>
                 <div className="title">
                     { title }
                 </div>

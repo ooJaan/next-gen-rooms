@@ -7,7 +7,7 @@ import config from "../config";
 export const useApi = () => {
     const { token, refreshAccessToken, c_logout, loggedIn } = useContext(AuthContext);
 
-    const reqWithAuth = async (endpoint, method="GET", data, refreshIfFailed=true) => {
+    const reqWithAuth = async (endpoint, method="GET", data) => {
         const url = `${config.apiUrl}/${endpoint}`
         
         const headers = {
@@ -34,13 +34,32 @@ export const useApi = () => {
             console.log("trying again with new token: ", newToken)
             let resp = await fetch(url, req);
             if (resp.status === 401) {
-                console.log("refresh token failed --> logging out")
-                c_logout();
-                return null;
+                throw {
+                    name: "RefreshTokenFailed",
+                    status: 401,
+                    statusText: "Refresh Token Failed",
+                    message: "Refresh token failed --> ag"
+                }
             }
             return resp.json()
         }
+        else if (response.status === 204) {
+            return null;
+        }
         else if (!response.ok) {
+            if (response.status === 400) {
+                const jsonData = await response.json();
+                console.log("bad request: ", jsonData)
+                if (jsonData.error) {
+                    throw {
+                        name: 'Bad Request',
+                        status: response.status,
+                        statusText: response.statusText,
+                        error: jsonData.error,
+                        message: `Bad Request: ${jsonData.error}, stack: ${jsonData.stackTrace}`
+                    };
+                }
+            }
             throw {
                 name: 'ApiError',
                 status: response.status,
@@ -53,6 +72,7 @@ export const useApi = () => {
             const jsonData = await response.json();
             return jsonData;
         } catch (error) {
+            console.error("error parsing json: ", error)
             return null;
         }
     }

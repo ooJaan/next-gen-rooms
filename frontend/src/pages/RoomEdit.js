@@ -9,6 +9,7 @@ import { useModify } from '../helpers/Modify.ts';
 import RoomAssets from '../comps/RoomAssets.js';
 import { RoomContext } from '../provider/RoomStatus.tsx';
 import Table from "../comps/Table";
+import Loading from "../comps/Loading";
 
 import "../css/RoomEdit.css"
 import "../css/classes.css"
@@ -24,7 +25,7 @@ const CustomInput = ({ name, content }) => {
 }
 
 const RoomEdit = () => {
-    const { rooms, roomLoading, types, typesLoading, users, userLoading, update, assets } = useContext(RoomContext);
+    const { rooms, roomLoading, types, typesLoading, users, userLoading, update, assets, assetLoading } = useContext(RoomContext);
     const { id } = useParams();
     const [typeOptions, setTypeOptions] = useState({});
     const [typeOptionsLoading, setTypeOptionsLoading] = useState(true);
@@ -36,6 +37,9 @@ const RoomEdit = () => {
     console.log("roomEdit init roomData: ", rooms[id])
 
     useEffect(() => {
+        if (roomLoading | rooms[id] === undefined){
+            return
+        }
         var options = [];
         for (let key in types) {
             if (key !== rooms[id].roomId) {
@@ -62,10 +66,16 @@ const RoomEdit = () => {
         await deleteRoom(id)
         navigate("/")
     }
-
-    if (roomLoading | typesLoading | typeOptionsLoading) {
-        return <div>Loading...</div>
+    if (rooms[id] === undefined && !roomLoading) {
+        console.log("room not found --> redirecting to home")
+        navigate("/")
+        return
     }
+
+    if (roomLoading | typesLoading | typeOptionsLoading | userLoading | assetLoading) {
+        return <Loading />
+    }
+
 
     return (
         <div className="room-edit flex-horizontal">
@@ -79,8 +89,8 @@ const RoomEdit = () => {
                                 content={
                                     <input 
                                         placeholder="Raumname" 
-                                        value={rooms[id].name} 
-                                        onChange={(e) => changeRoomMetadata("name", e.target.value, id)}
+                                        defaultValue={rooms[id].name}
+                                        onBlur={(e) => changeRoomMetadata("name", e.target.value, id)}
                                     />
                                 }
                             />
@@ -90,8 +100,8 @@ const RoomEdit = () => {
                                     <input 
                                         type="text" 
                                         placeholder="Raumnummer" 
-                                        value={rooms[id].number} 
-                                        onChange={(e) => changeRoomMetadata("roomNumber", e.target.value, id)}
+                                        defaultValue={rooms[id].number}
+                                        onBlur={(e) => changeRoomMetadata("roomNumber", e.target.value, id)}
                                     />
                                 }
                             />
@@ -100,7 +110,7 @@ const RoomEdit = () => {
                                 content={
                                     <Select
                                         options={typeOptions}
-                                        value={typeOptions.find(option => option.value === rooms[id].typeId) || null}
+                                        defaultValue={typeOptions.find(option => option.value === rooms[id].typeId) || null}
                                         onChange={(newType) => setType(newType)}
                                     />
                                 }
@@ -112,8 +122,8 @@ const RoomEdit = () => {
                                         type="number" 
                                         min="0" 
                                         placeholder="Maximale Buchungsdauer" 
-                                        value={rooms[id].maxDuration} 
-                                        onChange={(e) => changeRoomMetadata("maxDuration", e.target.value, id)}
+                                        defaultValue={rooms[id].maxDuration}
+                                        onBlur={(e) => changeRoomMetadata("maxDuration", e.target.value, id)}
                                     />
                                 }
                             />
@@ -124,8 +134,8 @@ const RoomEdit = () => {
                                         type="number" 
                                         min="0" 
                                         placeholder="Kapazität" 
-                                        value={rooms[id].capacity} 
-                                        onChange={(e) => changeRoomMetadata("capacity", e.target.value, id)}
+                                        defaultValue={rooms[id].capacity}
+                                        onBlur={(e) => changeRoomMetadata("capacity", e.target.value, id)}
                                     />
                                 }
                             />

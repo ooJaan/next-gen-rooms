@@ -1,18 +1,30 @@
 import React, { useState, useEffect, useContext } from "react";
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 
 import { RoomContext } from "../provider/RoomStatus.tsx";
 
 import { useApi } from '../helpers/api';
 import useDate from '../helpers/Date';
 import Table from "../comps/Table";
+import Loading from "../comps/Loading";
 import '../css/RoomOverview.css'
 
 const RoomOverview = () => {
-    const { rooms, roomLoading, users, userLoading, status, statusLoading } = useContext(RoomContext);
+    const { rooms, roomLoading, users, userLoading, status, statusLoading, assets, assetLoading, typeAssets, typeAssetsLoading } = useContext(RoomContext);
     const { id } = useParams();
     const { formatDate, formatTime } = useDate();
+    const navigate = useNavigate()
+
     
+    
+    if (typeAssetsLoading || roomLoading || userLoading || assetLoading || statusLoading) {
+        return <Loading />
+    }
+    if (rooms[id] === undefined) {
+        console.log("room not found --> redirecting to home")
+        navigate("/")
+        return <></>
+    }
 
     return (
         <div className="overview">
@@ -26,15 +38,40 @@ const RoomOverview = () => {
             <div className="overview-container">
 
                 <div>
-                    {!roomLoading ? (
-                        <>
-                            <h1>Ausstattung {rooms[id].name}</h1>
-                            <pre>
-                                {JSON.stringify(rooms[id], null, 2)}
-                            </pre>
-                        </>
+                {!roomLoading ? (
+                    <>
+                    <h1>Ausstattung {rooms[id].name}</h1>
+                        <Table
+                            head={
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Stück</th>
+                                </tr>
+                            }
+                            body={[
+                                ...rooms[id].roomAsset.map((data, index) => (
+                                    <tr key={data.id}>
+                                        {!assetLoading && assets[data.assetId] ? (
+                                            <td>{assets[data.assetId].name}</td>
+                                        ) : (
+                                            <td>Loading...</td>
+                                        )}
+                                        <td>{data.assetCount}</td>
+                                    </tr>
+                                )),
+                                ...Object.values(typeAssets).map((data, index) => 
+                                    data.typeId === rooms[id].typeId ? (
+                                        <tr key={index}>
+                                            <td>{assets[data.assetId].name}</td>    
+                                            <td>{data.assetCount}</td>
+                                        </tr>
+                                    ) : null
+                                )
+                            ]}
+                        />
+                    </>
                     ) : (
-                        <></>
+                        <h1>Loading...</h1>
                     )}
                 </div>
                 <div>

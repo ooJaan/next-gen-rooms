@@ -12,11 +12,11 @@ import RoomEdit from './pages/RoomEdit';
 import Users from './pages/Users';
 import ChangePw from './pages/ChangePw.js';
 import NetworkWrapper from './provider/Network.js';
+import UserOverview from './pages/UserOverview';
 
 import { AuthProvider, AuthContext } from "./provider/AuthProvider";
 import { ProtectedRoute } from "./provider/ProtectedRoute";
 import AdminRoute from "./provider/AdminRoute.js";
-
 
 const App = () => {
   return (
@@ -38,6 +38,7 @@ const App = () => {
               <Route path="/change-pw" element={<ChangePw />} />
               <Route path="/overview/:id" element={<RoomOverview />} />
               <Route path="/debug" element={<BaseLayout title="debug" content={<Debug />} />} />
+              <Route path="/user-overview" element={<UserOverview />} />
               
               <Route element={<AdminRoute />}>
                 <Route path="/users" element={<BaseLayout title="Users" content={<Users />} />} />

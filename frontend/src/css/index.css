@@ -53,6 +53,9 @@ button {
   padding: 5px;
   cursor: pointer;
   font-size: 1.1rem;
+  border-radius: var(--border-radius);
+  border: none;
+  box-shadow: var(--shadow-small);
 }
 
 button:hover {

@@ -13,12 +13,9 @@ const AssetsToOptions = (allAssets, usedAssets) => {
     //console.log(allAssets, usedAssets)
     var options = [];
     var newAllAssets = {...allAssets}
-    console.log("newAllAssets: ", newAllAssets)
     for (let i = 0; i < usedAssets.length; i++) {
-        console.log("usedAssets[i]: ", usedAssets[i].assetId)
         delete newAllAssets[usedAssets[i].assetId]
     }
-    console.log("newAllAssets: ", newAllAssets)
     for (let key in newAllAssets) {
         options.push({
             "label": newAllAssets[key]["name"],
@@ -63,6 +60,7 @@ const RoomAssets = ({ name, roomId}) => {
             console.log("new asset that needs syncing to backend: ", newOptions[i])
             try {
                 const newAssetId = await changeAsset({ "name": newOptions[i] }, newOptions[i], methods.NEW)
+                console.log("new asset created id: ", newAssetId)
                 await changeRoomAsset({ "roomId": roomId, "assetId": newAssetId, "assetCount": stueck }, newOptions[i], methods.NEW)
             }
             catch (error) {

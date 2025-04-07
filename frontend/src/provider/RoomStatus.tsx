@@ -21,15 +21,16 @@ export const RoomProvider = ({ children }) => {
     const [typesLoading, setTypesLoading] = useState(true)
     const [assets, setAssets] = useState({})
     const [assetsLoading, setAssetsLoading] = useState(true)
+    const [typeAssets, setTypeAssets] = useState({})
+    const [typeAssetsLoading, setTypeAssetsLoading] = useState(true)
 
     const prevRooms = useRef(null);
     const prevUsers = useRef(null);
     const prevTypes = useRef(null);
     const prevStatus = useRef(null);
     const prevAssets = useRef(null);
-
+    const prevTypeAssets = useRef(null);
     const { fetchWithAuth, postWithAuth, patchWithAuth, deleteWithAuth } = useApi();
-    console.log("RoomStatus re render")
 
     useEffect(() => {
         const init = async () => {
@@ -52,6 +53,7 @@ export const RoomProvider = ({ children }) => {
     useEffect(() => {
         const now = new Date();
         const delay = (60 - now.getSeconds()) * 1000 - now.getMilliseconds() + 200;
+        //const delay = 0;
         // always wait 200ms after the minute starts to avoid problems with the server time
 
         // Initial timeout to sync with clock
@@ -66,23 +68,34 @@ export const RoomProvider = ({ children }) => {
         return () => clearTimeout(initialTimeout);
     }, []);
 
+    useEffect(() => {
+        console.log("rooms changed --> updateStatus, rooms: ", rooms)
+        if (Object.keys(rooms).length > 0) {
+            prevRooms.current = rooms
+            updateStatus()
+        }
+    }, [rooms])
+
     const updateAll = async () => {
-        await fetchAnything("room", prevRooms, setRooms, setRoomLoading)
-        await fetchAnything("assets", prevAssets, setAssets, setAssetsLoading);
-        updateStatus()
+        fetchAnything("room", prevRooms, setRooms, setRoomLoading)
+        fetchAnything("assets", prevAssets, setAssets, setAssetsLoading);
         fetchAnything("types", prevTypes, setTypes, setTypesLoading);
         fetchAnything("users", prevUsers, setUsers, setUsersLoading);
-
+        fetchAnything("type-assets", prevTypeAssets, setTypeAssets, setTypeAssetsLoading);
     }
     const update = async () => {
         await fetchAnything("room", prevRooms, setRooms, setRoomLoading);
         await fetchAnything("users", prevUsers, setUsers, setUsersLoading);
-        fetchAnything("assets", prevAssets, setAssets, setAssetsLoading);
-        fetchAnything("types", prevTypes, setTypes, setTypesLoading);
+        await fetchAnything("assets", prevAssets, setAssets, setAssetsLoading);
+        await fetchAnything("types", prevTypes, setTypes, setTypesLoading);
+        await fetchAnything("type-assets", prevTypeAssets, setTypeAssets, setTypeAssetsLoading);
     };
+    const updateRooms = async () => {
+        fetchAnything("room", prevRooms, setRooms, setRoomLoading);
+    }
 
     const updateStatus = async () => {
-        console.log("updateStatus")
+        console.log("updateStatus, rms: ", prevRooms.current)
         const newStatus = getAllstatus(prevRooms.current);
         if (newStatus !== null && JSON.stringify(newStatus) !== JSON.stringify(prevStatus.current)) {
             prevStatus.current = newStatus;
@@ -92,7 +105,20 @@ export const RoomProvider = ({ children }) => {
     }
 
     const fetchAnything = async (url, ref, setter, loadingSetter) => {
-        const resp = await fetchWithAuth(url);
+        let resp = null
+        try {
+            resp = await fetchWithAuth(url);
+        }
+        catch (error) {
+            if (error instanceof TypeError && error.message === 'NetworkError when attempting to fetch resource.') {
+                //TODO add a small badge that displays that the connection is lost
+                console.log("request failed --> seems like the connection is lost")
+                return
+            }
+            else {
+                throw error
+            }
+        }
         if (JSON.stringify(resp) !== JSON.stringify(ref.current)) {
             ref.current = resp;
             await setter(resp);
@@ -119,6 +145,9 @@ export const RoomProvider = ({ children }) => {
         if (roomData.bookings.length > 0) {
             //console.log(`booking: ${JSON.stringify(roomData.bookings[0])}`)
             for (const booking of roomData.bookings) {
+                if (booking === undefined){
+                    continue
+                }
                 var status = getSingleStatus(booking, roomData.name, now)
                 //console.log(`status: ${JSON.stringify(status)}`)
                 if (status !== null) {
@@ -154,9 +183,11 @@ export const RoomProvider = ({ children }) => {
             users, usersLoading,
             types, typesLoading,
             assets, assetsLoading, setAssets,
+            typeAssets, typeAssetsLoading,
             getAllstatus,
             updateAll,
             update,
+            updateRooms,
             fetchAnything
         }}>
             {children}

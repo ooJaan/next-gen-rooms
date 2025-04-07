@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import { AuthContext } from "../provider/AuthProvider";
 import { RoomContext } from "../provider/RoomStatus.tsx";
+import { useModify } from "../helpers/Modify.ts";
 
 import Modal from '../comps/Modal';
 
@@ -38,7 +39,8 @@ const ModalContent = ({ roomData = null, setClosed }) => {
     const [attendees, setAttendees] = useState(0);
     const [buttonDisabled, setButtonDisabled] = useState(false)
     const { fetchWithAuth, postWithAuth } = useApi();
-    const { rooms, roomLoading, updateAll} = useContext(RoomContext);
+    const { rooms, roomLoading, updateRooms} = useContext(RoomContext);
+    const { createBooking } = useModify()
 
     console.log("re rendering modal")
 
@@ -127,14 +129,18 @@ const ModalContent = ({ roomData = null, setClosed }) => {
             "endDate": endISO
         }
         console.log(JSON.stringify(req))
-        const resp = await postWithAuth("booking/create", req)
-        console.log(resp)
-        if (!resp["error"]) {
-            setClosed(true)
-            updateAll()
-        } else {
-            setError(resp["error"])
+        try {
+            await createBooking(req)
+        } catch (e) {
+            if (e.name === "Bad Request") {
+                setError(e.error)
+                return
+            }
+            else {
+                throw e
+            }
         }
+        setClosed(true)
     };
 
 

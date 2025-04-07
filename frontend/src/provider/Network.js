@@ -1,6 +1,8 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, createContext } from 'react';
 import { useLocation, useNavigate, Navigate, Outlet } from 'react-router-dom';
 import { AuthContext } from './AuthProvider';
+
+export const NetworkContext = createContext();
 
 // Network status wrapper component
 const NetworkWrapper = () => {

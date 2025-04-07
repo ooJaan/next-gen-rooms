@@ -1,7 +1,9 @@
 import Modal from '../comps/Modal';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { useModify } from '../helpers/Modify.ts';
 import { useNavigate } from 'react-router-dom';
+import { RoomContext } from '../provider/RoomStatus.tsx';
+import Select from 'react-select';
 
 const NewRoom = ({setClosed, modalClosed}) => {
     const closeModal = () => {
@@ -17,6 +19,17 @@ const NewRoom = ({setClosed, modalClosed}) => {
     )
 }
 
+const Types2Options = (types) => {
+    var options = []
+    for (let key in types) {
+        options.push({
+            "label": types[key].name,
+            "value": key
+        })
+    }
+    return options
+}
+
 
 const ModalContent = ({closeModal}) => {
     const [error, setError] = useState(null)
@@ -26,6 +39,10 @@ const ModalContent = ({closeModal}) => {
     const [roomCapacity, setRoomCapacity] = useState('')
     const [roomType, setRoomType] = useState('')
     const [maxBookingDuration, setMaxBookingDuration] = useState('')
+
+    const [roomTypeOptions, setRoomTypeOptions] = useState([])
+
+    const { types, typesLoading } = useContext(RoomContext)
     const navigate = useNavigate()
 
     const { createRoom } = useModify()
@@ -36,8 +53,16 @@ const ModalContent = ({closeModal}) => {
         } else {
             setDisabled(true)
         }
-        //todo numberchecking 
+        //todo checking numbers 
     }, [roomName, roomNumber, roomCapacity, roomType, maxBookingDuration])
+
+    useEffect(() => {
+        if (typesLoading) {
+            return
+        }
+        setRoomTypeOptions(Types2Options(types))
+    }, [types])
+
     const handleSubmit = async (e) => {
         e.preventDefault()
         try {
@@ -45,24 +70,31 @@ const ModalContent = ({closeModal}) => {
                 name: roomName,
                 roomNumber: roomNumber,
                 capacity: roomCapacity,
-                maxBookingDuration: maxBookingDuration,
+                maxDuration: maxBookingDuration,
                 typeId: roomType
             })
+            console.log("created new room:", resp)
             await new Promise(resolve => setTimeout(resolve, 100));
             navigate(`/edit/${resp}`)
         } catch (error) {
             console.log(error)
         }
     }
+
+
     return (
-        <div>
+        <div className="new-room-container">
             <h1>Neuen Raum erstellen</h1>
             <div className="error">{error}</div>
             <form>
                 <input type="text" placeholder="Room Name" value={roomName} onChange={(e) => setRoomName(e.target.value)} />
                 <input type="text" placeholder="Room Number" value={roomNumber} onChange={(e) => setRoomNumber(e.target.value)} />
                 <input type="text" placeholder="Room Capacity" value={roomCapacity} onChange={(e) => setRoomCapacity(e.target.value)} />
-                <input type="text" placeholder="Room Type" value={roomType} onChange={(e) => setRoomType(e.target.value)} />
+                <Select 
+                    options={roomTypeOptions} 
+                    onChange={(e) => setRoomType(e.value)} 
+                    placeholder="Raum Typ"
+                />
                 <input type="number" placeholder="Maximale Buchungsdauer" value={maxBookingDuration} onChange={(e) => setMaxBookingDuration(e.target.value)} />
                 <button disabled={disabled} onClick={(e) => handleSubmit(e)}>Create Room</button>
             </form>

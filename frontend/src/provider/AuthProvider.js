@@ -82,6 +82,7 @@ export const AuthProvider = ({ children }) => {
       return data["error"]
     }
     c_setUserId(data.userId)
+    localStorage.setItem("userId", data.userId)
     c_setRole(data.role)
     localStorage.setItem("role", data.role)
     await login_token(username, data.accessToken, data.refreshToken)
