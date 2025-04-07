@@ -42,7 +42,7 @@ const ModalContent = ({closeModal}) => {
 
     const [roomTypeOptions, setRoomTypeOptions] = useState([])
 
-    const { types, typesLoading } = useContext(RoomContext)
+    const { types, typesLoading, updateRooms } = useContext(RoomContext)
     const navigate = useNavigate()
 
     const { createRoom } = useModify()
@@ -74,7 +74,6 @@ const ModalContent = ({closeModal}) => {
                 typeId: roomType
             })
             console.log("created new room:", resp)
-            await new Promise(resolve => setTimeout(resolve, 1000));
             navigate(`/edit/${resp}`)
         } catch (error) {
             if (error.name === "Bad Request") {

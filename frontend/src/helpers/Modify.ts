@@ -180,7 +180,7 @@ export const useModify = (roomId: string) => {
         if (resp) {
             let newRooms = { ...rooms }
             let newRoom = {
-                "roomId": resp.id,
+                "roomId": resp,
                 "name": room.name,
                 "number": room.roomNumber,
                 "capacity": room.capacity,
@@ -189,7 +189,7 @@ export const useModify = (roomId: string) => {
                 "bookings": [],
                 "roomAsset": []
             }
-            newRooms[resp.id] = newRoom
+            newRooms[resp] = newRoom
             await setRooms(newRooms)
         }
         return resp

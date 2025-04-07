@@ -15,6 +15,10 @@ const RoomOverview = () => {
     const { formatDate, formatTime } = useDate();
     const navigate = useNavigate()
 
+    if (typeAssetsLoading || roomLoading || userLoading || assetLoading || statusLoading) {
+        return <Loading />
+    }
+
     const equipmentColumns = [
         { key: 'name', label: 'Name', sortable: true },
         { key: 'count', label: 'Stück', sortable: true }
@@ -52,9 +56,7 @@ const RoomOverview = () => {
         userId: booking.userId
     }));
 
-    if (typeAssetsLoading || roomLoading || userLoading || assetLoading || statusLoading) {
-        return <Loading />
-    }
+
     if (rooms[id] === undefined) {
         console.log("room not found --> redirecting to home")
         navigate("/")
@@ -63,12 +65,8 @@ const RoomOverview = () => {
 
     return (
         <div className="overview">
-            <div className={!statusLoading ? `status-msg status-${status[id]?.type}` : 'status-msg'}>
-                {statusLoading ? (
-                    <></>
-                ) : (
+            <div className={`status-msg status-${status[id]?.type}`}>
                     <>{status[id].text}</>
-                )}
             </div>
             <div className="overview-container">
 
