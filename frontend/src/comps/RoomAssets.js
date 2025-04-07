@@ -10,7 +10,7 @@ import Table from './Table.js';
 import { useApi } from '../helpers/api.js';
 
 const AssetsToOptions = (allAssets, usedAssets) => {
-    //console.log(allAssets, usedAssets)
+    console.log(allAssets, usedAssets)
     var options = [];
     var newAllAssets = {...allAssets}
     for (let i = 0; i < usedAssets.length; i++) {
@@ -22,26 +22,37 @@ const AssetsToOptions = (allAssets, usedAssets) => {
             "value": key,
         })
     }
-    //console.log(options)
+    console.log("options: ", options)
     return options
 }
 
-const RoomAssets = ({ name, roomId}) => {
+/**
+ * 
+ * @param {*} name           name of the assets
+ * @param {*} id             roomId or typeId
+ * @param {*} assets         all assets
+ * @param {*} assetsLoading  loading state of assets
+ * @param {*} anyAsset       assets of the room or type (typeAsset or roomAsset)
+ * @param {*} changeAnyAsset change function of the assets
+ * @returns rea
+ */
+
+const RoomAssets = ({ name, id, roomId, assets, assetsLoading, anyAsset, changeAnyAsset}) => {
     const [options, setOptions] = useState({});
     const [newOptions, setNewOptions] = useState([])
     const [value, setValue] = useState([]);
     const [stueck, setStueck] = useState(1);
     const [buttonDisabled, setButtonDisabled] = useState(true);
-    const { rooms, assets, assetsLoading } = useContext(RoomContext)
-    const {changeAsset, changeRoomAsset} = useModify()
+    //const { rooms, assets, assetsLoading } = useContext(RoomContext)
+    const {changeAsset} = useModify()
 
     
-
+    console.log("id: ", id)
 
     useEffect(() => {
-        console.log("assets to options: used assets: ", rooms[roomId]["roomAsset"])
-        setOptions(AssetsToOptions(assets, rooms[roomId]["roomAsset"]))
-    }, [rooms[roomId]["roomAsset"], assets]);
+        console.log("assets to options: used assets: ", anyAsset)
+        setOptions(AssetsToOptions(assets, anyAsset))
+    }, [anyAsset, assets]);
 
     useEffect(() => {
         if (value.length > 0 & stueck > 0) {
@@ -53,7 +64,6 @@ const RoomAssets = ({ name, roomId}) => {
     }, [value, stueck])
     const handleSubmit = async (e) => {
         e.preventDefault();
-        var dict = {};
         console.log(newOptions.length);
         var newOpts = {}
         for (let i = 0; i < newOptions.length; i++) {
@@ -61,7 +71,7 @@ const RoomAssets = ({ name, roomId}) => {
             try {
                 const newAssetId = await changeAsset({ "name": newOptions[i] }, newOptions[i], methods.NEW)
                 console.log("new asset created id: ", newAssetId)
-                await changeRoomAsset({ "roomId": roomId, "assetId": newAssetId, "assetCount": stueck }, newOptions[i], methods.NEW)
+                await changeAnyAsset({ "roomId": id, "assetId": newAssetId, "assetCount": stueck }, newOptions[i], methods.NEW)
             }
             catch (error) {
                 console.log("error: ", error)
@@ -71,22 +81,20 @@ const RoomAssets = ({ name, roomId}) => {
             console.log("setting all new assets with new options: ", JSON.stringify(newOpts))
             //setAllAssets({ ...assets, ...newOpts })
         }
-        //console.log(value, stueck);
+        console.log(value, stueck);
         for (let i = 0; i < value.length; i++) {
             var v = value[i]
-            changeRoomAsset({ "roomId": roomId, "assetId": v.value, "assetCount": stueck }, v.value, methods.NEW)
+            await changeAnyAsset({ "roomId": id, "assetId": v.value, "assetCount": stueck }, v.value, methods.NEW)
         }
         setValue([])
-        //TODO: update the backend
     }
-    const onDelete = (id) => {
-        console.log("deleting with id: ", id)
-        changeRoomAsset({"roomId": roomId}, id, methods.DELETE)
-        //TODO: update the backend
+    const onDelete = (delete_id) => {
+        console.log("deleting with id: ", delete_id)
+        changeAnyAsset({"roomId": id}, delete_id, methods.DELETE)
     }
     const onCreate = (inputValue) => {
-        for (let key in rooms[roomId]["roomAsset"]) {
-            var value = rooms[roomId]["roomAsset"].filter(asset => asset.name === inputValue)
+        for (let key in anyAsset) {
+            var value = anyAsset.filter(asset => asset.name === inputValue)
             console.log(value)
             if (value.name === inputValue) {
                 console.log("option already exists in used assets")
@@ -105,16 +113,13 @@ const RoomAssets = ({ name, roomId}) => {
 
     }
 
-    const onStueckAssetChange = (e, id, assetId) => {
+    const onStueckAssetChange = (e, anyId, assetId) => {
         const req = {
-            "roomId": roomId,
+            "roomId": id,
             "assetId": assetId,
             "assetCount": e.target.value
         }
-        changeRoomAsset(req, id, methods.UPDATE)
-    }
-    if (assetsLoading) {
-        return <h1>Loading...</h1>
+        changeAnyAsset(req, anyId, methods.UPDATE)
     }
     return (
         <div className="assets">
@@ -126,10 +131,11 @@ const RoomAssets = ({ name, roomId}) => {
                             <th>Name</th>
                             <th>Stück</th>
                             <th>Delete</th>
+                            <th></th>
                         </tr>
                     }
-                    body={Object.entries(rooms[roomId]["roomAsset"]).map(([id, data]) => (
-                        <tr key={id}>
+                    body={Object.entries(anyAsset).map(([key, data]) => (
+                        <tr key={key}>
                             <td>{assets[data.assetId].name}</td>
                             <td>
                                 <input

@@ -95,7 +95,6 @@ export const RoomProvider = ({ children }) => {
     }
 
     const updateStatus = async () => {
-        console.log("updateStatus, rms: ", prevRooms.current)
         const newStatus = getAllstatus(prevRooms.current);
         if (newStatus !== null && JSON.stringify(newStatus) !== JSON.stringify(prevStatus.current)) {
             prevStatus.current = newStatus;
@@ -183,7 +182,7 @@ export const RoomProvider = ({ children }) => {
             users, usersLoading,
             types, typesLoading,
             assets, assetsLoading, setAssets,
-            typeAssets, typeAssetsLoading,
+            typeAssets, typeAssetsLoading, setTypeAssets,
             getAllstatus,
             updateAll,
             update,

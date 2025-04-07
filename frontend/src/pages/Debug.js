@@ -12,7 +12,7 @@ export const Debug = () => {
     const { fetchWithAuth} = useApi();
     const [ endpoint, setEndpoint] = useState("");
     const [ data, setData] = useState("");
-    const { rooms, status, getAllstatus } = useContext(RoomContext);
+    const { typeAssets, status, getAllstoatus, rooms } = useContext(RoomContext);
     const { refreshAccessToken, setToken } = useContext(AuthContext);
 
     const refreshToken = async (e) => {
@@ -39,6 +39,8 @@ export const Debug = () => {
     }
     return (
         <div>
+            <pre>{JSON.stringify(typeAssets, null, 2)}</pre>
+            <pre>{JSON.stringify(rooms, null, 2)}</pre>
             <button onClick={(e) => refreshAccessToken(e)}>Refresh Access Token</button>
             <button onClick={(e) => setInvalidToken(e)}>Set Invalid Token</button>
             <pre>{JSON.stringify(status, null, 2)}</pre>

@@ -25,13 +25,13 @@ const CustomInput = ({ name, content }) => {
 }
 
 const RoomEdit = () => {
-    const { rooms, roomLoading, types, typesLoading, users, userLoading, update, assets, assetLoading } = useContext(RoomContext);
+    const { rooms, roomLoading, types, typesLoading, users, userLoading, update, assets, assetLoading, typeAssets, typeAssetsLoading } = useContext(RoomContext);
     const { id } = useParams();
     const [typeOptions, setTypeOptions] = useState({});
     const [typeOptionsLoading, setTypeOptionsLoading] = useState(true);
     const { formatDate, formatTime } = useDate();
     const { deleteWithAuth } = useApi();
-    const { changeRoomMetadata, deleteBooking, deleteRoom } = useModify(id);
+    const { changeRoomMetadata, deleteBooking, deleteRoom, changeTypeAsset, changeRoomAsset } = useModify(id);
 
     const navigate = useNavigate()
     console.log("roomEdit init roomData: ", rooms[id])
@@ -56,10 +56,7 @@ const RoomEdit = () => {
 
     const setType = async (newTypeId) => {
         console.log(newTypeId)
-        var updatedRoom = { ...rooms[id] };
-        updatedRoom.typeId = newTypeId.value
-        console.log(updatedRoom)
-        //todo modify rooms
+        await changeRoomMetadata("typeId", newTypeId.value, id)
     }
 
     const delRoom = async () => {
@@ -78,9 +75,14 @@ const RoomEdit = () => {
 
 
     return (
-        <div className="room-edit flex-horizontal">
-            <div className="metadata">
-                <div>
+        <div className="room-edit-container flex-vertical">
+            <div className="taskbar flex-horizontal">
+                <button onClick={() => delRoom()}>Raum löschen</button>
+                <button onClick={() => delRoom()}>Raum buchen</button>
+            </div>
+            <div className="room-edit flex-horizontal">
+                <div className="metadata">
+                    <div>
                     <h1>{rooms[id].name}</h1>
                     <table>
                         <tbody>
@@ -177,18 +179,27 @@ const RoomEdit = () => {
                 </div>
             </div>
             <div className="assets-container flex-vertical">
-                {roomLoading ? (
-                    <h1>Loading...</h1>
-                )
-                : (
-                    <>
-                        <button onClick={() => delRoom()}>Delete Room</button>
-                        <RoomAssets name="Raumspezifisch" roomId={id} roomLoading={roomLoading}/>
-                    </>
-                )
-                }
+                <RoomAssets 
+                    name="Raumspezifisch" 
+                    id={id}
+                    roomLoading={roomLoading}
+                    assets={assets}
+                    assetsLoading={assetLoading}
+                    changeAnyAsset={changeRoomAsset}
+                    anyAsset={rooms[id].roomAsset}
+                />
+                <RoomAssets 
+                    name="Typ-spezifisch"
+                    id={rooms[id].typeId}
+                    roomLoading={roomLoading}
+                    assets={assets}
+                    assetsLoading={typeAssetsLoading}
+                    changeAnyAsset={changeTypeAsset}
+                    anyAsset={Object.entries(typeAssets).filter(([_, asset]) => asset.typeId === rooms[id].typeId).map(([id, asset]) => ({...asset, id}))}
+                />
             </div>
 
+        </div>
         </div>
     )
 }
