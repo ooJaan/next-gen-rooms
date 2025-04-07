@@ -11,7 +11,11 @@
     flex-basis: 100px;
     border-radius: var(--border-radius);
 }
-    
+
+.taskbar {
+    align-items: center;
+    gap: 10px;
+}
 
 .assets-container {
 }
