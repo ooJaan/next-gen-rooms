@@ -21,15 +21,21 @@ const Login = () => {
         setError(null)
         e.preventDefault();
         if (validate(password) !== null){
-            setError("Das Passwort ist falsch!")
+            setError("Das Passwort ist falsch!");
             return
         }
         console.log(user)
         const err = await loginPwd(user, password);
         if (err !== null) {
+            if(err === "The password is not correct.")
+            {
+                setError("Das Passwort ist falsch!");
+                return;
+            }else{
             setError(err)
             console.log(error)
             return
+            }
         }
         const redirectPath = new URLSearchParams(location.search).get("redirect") || "/";
         navigate(redirectPath);

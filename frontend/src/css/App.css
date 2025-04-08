@@ -29,6 +29,7 @@
 .error {
   color: var(--color-error);
   font-size: 1.25rem;
+  text-align: center;
 }
 
 .content {
