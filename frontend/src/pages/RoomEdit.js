@@ -73,6 +73,20 @@ const RoomEdit = () => {
         return <Loading />
     }
 
+    const columns = [
+        { key: 'date', label: 'Datum', sortable: true },
+        { key: 'startTime', label: 'Von', sortable: true },
+        { key: 'endTime', label: 'Bis', sortable: true },
+        { key: 'username', label: 'User', sortable: true },
+        { 
+            key: 'actions', 
+            label: 'Actions',
+            sortable: false,
+            render: (row) => (
+                <button onClick={() => deleteBooking(row.bookingId)}>Delete</button>
+            )
+        }
+    ];
 
     return (
         <div className="room-edit-container flex-vertical">
@@ -145,37 +159,25 @@ const RoomEdit = () => {
                     </table>
                 </div>
                 <div>
-
-                    {!roomLoading ? (
-                        <Table
-                            head={
-                                <tr>
-                                    <th>Datum</th>
-                                    <th>Von</th>
-                                    <th>Bis</th>
-                                    <th>User</th>
-                                    <th></th>
-                                </tr>
-                            }
-                            body={rooms[id].bookings.map((data, index) => (
-                                <tr key={data.id}>
-                                    <td>{formatDate(data.start)}</td>
-                                    <td>{formatTime(data.start)}</td>
-                                    <td>{formatTime(data.end)}</td>
-                                    {!userLoading && users[data.userId] ? (
-                                        <td>{users[data.userId].username}</td>
-                                    ) : (
-                                        <td>Loading...</td>
-                                    )}
-                                    <td>
-                                        <button onClick={() => deleteBooking(data.id)}>Delete</button>
-                                    </td>
-                                </tr>
-                            ))}
-                        />
-                    ) : (
-                        <h1>Loading...</h1>
-                    )}
+                    <Table
+                        head={
+                            <tr>
+                                <th>Datum</th>
+                                <th>Von</th>
+                                <th>Bis</th>
+                                <th>User</th>
+                                <th></th>
+                            </tr>
+                        }
+                        data={rooms[id].bookings.map(booking => ({
+                            date: formatDate(booking.start),
+                            startTime: formatTime(booking.start),
+                            endTime: formatTime(booking.end),
+                            username: users[booking.userId]?.username || 'Loading...',
+                            bookingId: booking.id
+                        }))}
+                        columns={columns}
+                    />
                 </div>
             </div>
             <div className="assets-container flex-vertical">

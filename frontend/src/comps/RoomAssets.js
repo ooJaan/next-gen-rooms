@@ -121,6 +121,39 @@ const RoomAssets = ({ name, id, roomId, assets, assetsLoading, anyAsset, changeA
         }
         changeAnyAsset(req, anyId, methods.UPDATE)
     }
+
+    const columns = [
+        { key: 'name', label: 'Name', sortable: true },
+        { 
+            key: 'assetCount', 
+            label: 'Stück',
+            sortable: true,
+            render: (row) => (
+                <input
+                    type="number"
+                    value={row.assetCount}
+                    min="1"
+                    onChange={(e) => onStueckAssetChange(e, row.id, row.assetId)}
+                />
+            )
+        },
+        { 
+            key: 'actions', 
+            label: 'Delete',
+            sortable: false,
+            render: (row) => (
+                <button onClick={() => onDelete(row.id)}>Delete</button>
+            )
+        }
+    ];
+
+    const tableData = Object.entries(anyAsset).map(([key, data]) => ({
+        id: data.id,
+        name: assets[data.assetId].name,
+        assetCount: data.assetCount,
+        assetId: data.assetId
+    }));
+
     return (
         <div className="assets">
             <h1>{name}</h1>
@@ -131,25 +164,10 @@ const RoomAssets = ({ name, id, roomId, assets, assetsLoading, anyAsset, changeA
                             <th>Name</th>
                             <th>Stück</th>
                             <th>Delete</th>
-                            <th></th>
                         </tr>
                     }
-                    body={Object.entries(anyAsset).map(([key, data]) => (
-                        <tr key={key}>
-                            <td>{assets[data.assetId].name}</td>
-                            <td>
-                                <input
-                                    type="number"
-                                    value={data.assetCount}
-                                    min="1"
-                                    onChange={(e) => onStueckAssetChange(e, data.id, data.assetId)}
-                                />
-                            </td>
-
-                            <td><button onClick={() => onDelete(data.id)}>Delete</button>
-                            </td>
-                        </tr>
-                    ))}
+                    data={tableData}
+                    columns={columns}
                 />
             </div>
             <div className="asset-selector">

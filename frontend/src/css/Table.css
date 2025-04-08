@@ -54,3 +54,7 @@
 .custom-table .grow {
     width: 100%;
 }
+
+.custom-table th[style*="cursor: pointer"]:hover {
+    background-color: #f5f5f5;
+}
