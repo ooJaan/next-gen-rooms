@@ -70,7 +70,7 @@ const RoomList =  ({}) => {
             key: 'name', 
             label: 'Name',
             sortable: true,
-            render: (row) => <Link to={`/overview/${row.roomId}`}>{row.name}</Link>
+            render: (row) => <Link className="table-data-name" to={`/overview/${row.roomId}`}>{row.name}</Link>
         },
         { key: 'number', label: 'RaumNr', sortable: true },
         { key: 'capacity', label: 'Kapazität', sortable: true },
