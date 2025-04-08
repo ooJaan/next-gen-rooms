@@ -1,3 +1,11 @@
+/* Navbar container */
+.navbar {
+    overflow: hidden;
+    background-color: #333;
+    font-family: Arial;
+}
+
+/* Navbar container */
 .nav-container{
     display: flex;
     flex-direction: row;
@@ -11,9 +19,24 @@
     align-self: center;
 }
 
+.actions {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+}
+
+.actions  button {
+    background-color: var(--grey);
+    padding: 0.5rem;
+}
+.actions button:hover {
+    background-color: var(--grey-hover);
+}
+
 .back {
     margin-right: 1rem;
     align-self: center;
+    fill: var(--grey);
 }
 
 .room-container{
@@ -26,11 +49,6 @@
     width: 3rem;
 }
 
-.nav-user{
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-}
 .nav-left{
     display: flex;
     flex-direction: row;
@@ -40,4 +58,68 @@
 .logout-button{
     margin-left: 1rem;
     height: 31px;
+}
+
+/* User dropdown styles */
+.nav-user {
+    position: relative; /* Make sure the dropdown is positioned relative to the button */
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.nav-user .user-button {
+    font-size: 16px;
+    color: white;
+    padding: 14px 16px;
+    background-color: inherit;
+    border: none;
+    cursor: pointer;
+}
+
+/* Dropdown content (hidden by default) */
+.user-dropdown {
+    display: none;
+    position: absolute; /* Position it absolutely */
+    top: 100%; /* Ensure it goes below the button */
+    right: 0; /* Align it to the right of the parent (so it won't overflow) */
+    background-color: var(--color-primary);
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+    box-shadow: var(--shadow-top);
+}
+
+/* Links inside the dropdown */
+.user-dropdown a {
+    color: var(--color-secondary);
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    text-align: left;
+}
+
+/* Add a grey background color to dropdown links on hover */
+.user-dropdown a:hover {
+    background-color: var(--surface);
+}
+
+/* Show the dropdown menu on hover */
+.nav-user:hover .user-dropdown {
+    display: block;
+}
+
+/* Navbar links inside the navbar */
+.navbar a {
+    float: left;
+    font-size: 16px;
+    color: var(--color-primary);
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+/* Add a red background color to navbar links on hover */
+.navbar a:hover, .nav-user:hover .dropbtn {
+    background-color: red;
 }

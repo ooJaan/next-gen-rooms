@@ -12,7 +12,7 @@ import RoomEdit from './pages/RoomEdit';
 import Users from './pages/Users';
 import ChangePw from './pages/ChangePw.js';
 import NetworkWrapper from './provider/Network.js';
-import UserOverview from './pages/UserOverview';
+import UserBookings from './pages/UserBookings.js';
 
 import { AuthProvider, AuthContext } from "./provider/AuthProvider";
 import { ProtectedRoute } from "./provider/ProtectedRoute";
@@ -38,10 +38,10 @@ const App = () => {
               <Route path="/change-pw" element={<ChangePw />}/>
               <Route path="/overview/:id" element={<RoomOverview />} />
               <Route path="/debug" element={<BaseLayout title="debug" content={<Debug />} />} />
-              <Route path="/user-overview" element={<UserOverview />} />
+              <Route path="/my-bookings" element={<BaseLayout title="Meine Buchungen" content={<UserBookings />} />} />
               
               <Route element={<AdminRoute />}>
-                <Route path="/users" element={<BaseLayout title="Users" content={<Users />} />} />
+                <Route path="/users" element={<BaseLayout title="Benutzer verwalten" content={<Users />} />} />
                 <Route path="/edit/:id" element={<RoomEdit />} />
               </Route>
             </Route>

@@ -3,14 +3,13 @@ import { useParams } from 'react-router-dom';
 
 import { RoomContext } from '../provider/RoomStatus.tsx';
 import { useModify, methods} from '../helpers/Modify.ts';
-
+import Loading from './Loading.js';
 
 import MultiSelect from '../comps/MultiSelect.js';
 import Table from './Table.js';
 import { useApi } from '../helpers/api.js';
 
 const AssetsToOptions = (allAssets, usedAssets) => {
-    console.log(allAssets, usedAssets)
     var options = [];
     var newAllAssets = {...allAssets}
     for (let i = 0; i < usedAssets.length; i++) {
@@ -22,7 +21,6 @@ const AssetsToOptions = (allAssets, usedAssets) => {
             "value": key,
         })
     }
-    console.log("options: ", options)
     return options
 }
 
@@ -47,10 +45,8 @@ const RoomAssets = ({ name, id, roomId, assets, assetsLoading, anyAsset, changeA
     const {changeAsset} = useModify()
 
     
-    console.log("id: ", id)
 
     useEffect(() => {
-        console.log("assets to options: used assets: ", anyAsset)
         setOptions(AssetsToOptions(assets, anyAsset))
     }, [anyAsset, assets]);
 
@@ -62,6 +58,7 @@ const RoomAssets = ({ name, id, roomId, assets, assetsLoading, anyAsset, changeA
             setButtonDisabled(true)
         }
     }, [value, stueck])
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         console.log(newOptions.length);
@@ -84,6 +81,7 @@ const RoomAssets = ({ name, id, roomId, assets, assetsLoading, anyAsset, changeA
         console.log(value, stueck);
         for (let i = 0; i < value.length; i++) {
             var v = value[i]
+            console.debug("setting new value: ", v)
             await changeAnyAsset({ "roomId": id, "assetId": v.value, "assetCount": stueck }, v.value, methods.NEW)
         }
         setValue([])
@@ -142,10 +140,11 @@ const RoomAssets = ({ name, id, roomId, assets, assetsLoading, anyAsset, changeA
             label: 'Delete',
             sortable: false,
             render: (row) => (
-                <button onClick={() => onDelete(row.id)}>Delete</button>
+                <button className="delete-button" onClick={() => onDelete(row.id)}>Löschen</button>
             )
         }
     ];
+    console.log(assets)
 
     const tableData = Object.entries(anyAsset).map(([key, data]) => ({
         id: data.id,
@@ -155,7 +154,8 @@ const RoomAssets = ({ name, id, roomId, assets, assetsLoading, anyAsset, changeA
     }));
 
     return (
-        <div className="assets">
+        <div className="surface">
+            <div className="assets">
             <h1>{name}</h1>
             <div>
                 <Table
@@ -163,7 +163,7 @@ const RoomAssets = ({ name, id, roomId, assets, assetsLoading, anyAsset, changeA
                         <tr>
                             <th>Name</th>
                             <th>Stück</th>
-                            <th>Delete</th>
+                            <th>Löschen</th>
                         </tr>
                     }
                     data={tableData}
@@ -193,7 +193,9 @@ const RoomAssets = ({ name, id, roomId, assets, assetsLoading, anyAsset, changeA
                     >Hinzufügen</button>
                 </div>
             </div>
+            </div>
         </div>
+        
     )
 
 }

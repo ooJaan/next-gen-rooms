@@ -94,18 +94,23 @@ export const useModify = (roomId: string) => {
                 break;
             case methods.DELETE:
                 console.debug("deleting room asset: ", id)
-                resp = await deleteWithAuth(`room-assets/${id}`)
                 let newRooms = { ...rooms };
-                let assets = newRooms[newAsset.roomId].roomAsset
-                for (let i = 0; i < assets.length; i++) {
-                    console.log(assets[i].id, id)
-                    if (assets[i].id === id) {
-                        delete assets[i]
-                        break;
+                let oldRooms = { ...rooms };
+                try {
+                    deleteWithAuth(`room-assets/${id}`)
+                    let assets = newRooms[newAsset.roomId].roomAsset
+                    for (let i = 0; i < assets.length; i++) {
+                        if (assets[i].id === id) {
+                            delete assets[i]
+                            break;
+                        }
                     }
+                    
+                    setRooms(newRooms)
                 }
-
-                setRooms(newRooms)
+                catch (error) {
+                    setRooms(oldRooms)
+                }
                 break;
         }
     }
@@ -189,7 +194,7 @@ export const useModify = (roomId: string) => {
                 "bookings": [],
                 "roomAsset": []
             }
-            newRooms[id] = newRoom
+            newRooms[resp] = newRoom
             await setRooms(newRooms)
         }
         return resp

@@ -15,14 +15,14 @@ export const AuthProvider = ({ children }) => {
 
 
 
-  console.log("AuthProvider re render: ", loggedIn, token, c_user, c_userId, c_role, refreshToken)
+  console.debug("AuthProvider re render: ", loggedIn, token, c_user, c_userId, c_role, refreshToken)
   useEffect(() => {
     login_token(c_user, token, refreshToken)
   },[]);
   
 
   const login_token = async (username, newToken, newRefreshToken) => {
-    console.log("logging in with token: ", username, newToken, newRefreshToken)
+    console.debug("logging in with token: ", username, newToken, newRefreshToken)
     if (username === null | newToken === null | newRefreshToken=== null) {
       // no token set
       setLoggedIn(false)
@@ -31,14 +31,14 @@ export const AuthProvider = ({ children }) => {
     let status = await validateToken(newToken)
     switch (status) {
       case 200:
-        console.log("token is already valid --> logging in")
+        console.log("token valid --> logging in")
         setToken(newToken)
         localStorage.setItem("token", newToken)
         setRefreshToken(newRefreshToken)
         localStorage.setItem("refreshToken", newRefreshToken)
         break
       case 401:
-        console.log("token invalid --> trying to refresh")
+        console.debug("token invalid --> trying to refresh")
         if (!await refreshAccessToken()) {
           console.log("refresh token failed --> logging out")
           setLoggedIn(false)
@@ -55,7 +55,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const validateToken = async (newToken) => {
-    console.log("validating token: ", newToken)
+    console.debug("validating token: ", newToken)
     const url = `${config.apiUrl}/auth/check`
     const req = {
         headers: {

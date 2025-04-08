@@ -83,14 +83,31 @@
   color: green;
   border-color: green;
 }
-.status-1 {
-  color: red;
+.status-2 {
+  color: var(--color-error);
   border-color: red;
 }
-.status-2 {
-  color: orange;
-  border-color: orange;
+.status-1 {
+  color: var(--color-warn);
+  border-color: var(--color-warn);
 }
+
+.delete-button {
+  background-color: var(--color-error);
+}
+.delete-button:hover {
+  background-color: var(--color-error-hover);
+}
+
+.btn-secondary {
+  background-color: var(--grey);
+  padding: 5px;
+  font-size: 0.75rem;
+}
+.btn-secondary:hover {
+  background-color: var(--grey-hover);
+}
+
 .RoomList .buchung {
   flex-grow: 0 !important;
   width: min-content;

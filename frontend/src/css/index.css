@@ -8,8 +8,12 @@
   --color-tertiary: hsl(163, 80%, 20%);
   --color-tertiary-hover: hsl(163, 80%, 25%);
   --color-accent: hsl(283, 80%, 20%);
-  --color-error: hsl(6, 79%, 49%);
+  --color-warn: hsl(36, 100%, 40%);
+  --color-error: hsl(0, 80%, 40%);
+  --color-error-hover: hsl(0, 80%, 45%);
 
+  --grey: hsl(163, 10%, 20%);
+  --grey-hover: hsl(163, 10%, 25%);
 
   --ff: "Space-Grotesk";
   --h1: bold 1.125rem/1.4em var(--ff);

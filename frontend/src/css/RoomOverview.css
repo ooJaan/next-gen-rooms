@@ -33,12 +33,12 @@ div {
     
 }
 
-.status-msg.status-1 {
-    background: rgba(255, 67, 45, 0.79);
-    color: white;
+.status-msg.status-2 {
+    background: var(--color-error);
+    color: var(--surface);
 
 }
-.status-msg.status-2 {
-    background-color: rgba(251, 192, 147, 1);
-    color: white;
+.status-msg.status-1 {
+    background-color: var(--color-warn);
+    color: var(--surface);
 }

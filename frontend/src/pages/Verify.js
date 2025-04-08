@@ -79,11 +79,9 @@ const Verify = () => {
                 </div>
                 <form onSubmit={handleSubmit}>
                     <input placeholder="Code" value={code} onChange={(e) => setCode(e.target.value)} />
-                    <button type="submit">Verify</button>
+                    <button className="btn-secondary" onClick={resendEmail}>Code erneut senden</button>
+                    <button type="submit">Verifizieren</button>
                 </form>
-                <div>
-                    <button onClick={resendEmail}>Resend Code</button>
-                </div>
             </div>
         </div>
     )

@@ -1,17 +1,17 @@
 import { useEffect, useContext, useState } from "react";
-import { AuthContext } from "../provider/AuthProvider";
+import { AuthContext } from "../provider/AuthProvider.js";
 import { RoomContext } from "../provider/RoomStatus.tsx";
 
 import { useModify } from "../helpers/Modify.ts";
-import { useApi } from "../helpers/api";
-import Loading from "../comps/Loading";
+import { useApi } from "../helpers/api.js";
+import Loading from "../comps/Loading.js";
 
-import Table from "../comps/Table";
-import useDate from "../helpers/Date";
+import Table from "../comps/Table.js";
+import useDate from "../helpers/Date.js";
 
 
 
-const UserOverview = () => {
+const UserBookings = () => {
     const { loggedIn, c_userId, c_user, c_role } = useContext(AuthContext)
     const { rooms } = useContext(RoomContext)
     const { fetchWithAuth } = useApi()
@@ -43,7 +43,7 @@ const UserOverview = () => {
             label: 'Löschen',
             sortable: false,
             render: (row) => (
-                <button onClick={() => deleteBooking(row.id)}>Delete</button>
+                <button className="delete-button" onClick={() => deleteBooking(row.id)}>Delete</button>
             )
         }
     ];
@@ -60,11 +60,10 @@ const UserOverview = () => {
 
     return (
         <div>
-            <h1>User Overview</h1>
             <Table 
                 head={
                     <tr>
-                        <th>Room</th>
+                        <th>Raum</th>
                         <th>Datum</th>
                         <th>Von</th>
                         <th>Bis</th>
@@ -78,4 +77,4 @@ const UserOverview = () => {
     )
 }
 
-export default UserOverview 
+export default UserBookings 

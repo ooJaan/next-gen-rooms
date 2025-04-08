@@ -44,12 +44,6 @@ export const RoomProvider = ({ children }) => {
 
         return () => clearInterval(interval);
     }, []);
-    /*
-    useEffect(() => {   
-        console.log("rooms changed --> updateStatus")
-        updateStatus()
-    }, [rooms])
-    */
     useEffect(() => {
         const now = new Date();
         const delay = (60 - now.getSeconds()) * 1000 - now.getMilliseconds() + 200;
@@ -69,7 +63,6 @@ export const RoomProvider = ({ children }) => {
     }, []);
 
     useEffect(() => {
-        console.log("rooms changed --> updateStatus, rooms: ", rooms)
         if (Object.keys(rooms).length > 0) {
             prevRooms.current = rooms
             updateStatus()
@@ -84,11 +77,11 @@ export const RoomProvider = ({ children }) => {
         fetchAnything("type-assets", prevTypeAssets, setTypeAssets, setTypeAssetsLoading);
     }
     const update = async () => {
-        await fetchAnything("room", prevRooms, setRooms, setRoomLoading);
-        await fetchAnything("users", prevUsers, setUsers, setUsersLoading);
-        await fetchAnything("assets", prevAssets, setAssets, setAssetsLoading);
-        await fetchAnything("types", prevTypes, setTypes, setTypesLoading);
-        await fetchAnything("type-assets", prevTypeAssets, setTypeAssets, setTypeAssetsLoading);
+        fetchAnything("room", prevRooms, setRooms, setRoomLoading);
+        fetchAnything("users", prevUsers, setUsers, setUsersLoading);
+        fetchAnything("assets", prevAssets, setAssets, setAssetsLoading);
+        fetchAnything("types", prevTypes, setTypes, setTypesLoading);
+        fetchAnything("type-assets", prevTypeAssets, setTypeAssets, setTypeAssetsLoading);
     };
     const updateRooms = async () => {
         fetchAnything("room", prevRooms, setRooms, setRoomLoading);
@@ -135,7 +128,6 @@ export const RoomProvider = ({ children }) => {
             var room = rooms[roomId]
             status_local[room.roomId] = getRoomStatus(room, now)
         }
-        console.log(status_local)
         return status_local
     }
 
@@ -143,35 +135,50 @@ export const RoomProvider = ({ children }) => {
         //console.log(`getting status from room ${roomData.name} with bookings ${JSON.stringify(roomData.bookings)}`);
         if (roomData.bookings.length > 0) {
             //console.log(`booking: ${JSON.stringify(roomData.bookings[0])}`)
+            var highestStatus = null
             for (const booking of roomData.bookings) {
                 if (booking === undefined){
                     continue
                 }
-                var status = getSingleStatus(booking, roomData.name, now)
+                var status = getSingleStatus(booking, roomData, now)
                 //console.log(`status: ${JSON.stringify(status)}`)
-                if (status !== null) {
-                    //console.log(`found relevant booking: status: ${JSON.stringify(status)}`)
+
+                if (status === null){
+                    continue
+                }
+                if (status["type"] === 1){
+                    //status is soon to be booked
+                    highestStatus = status
+                    continue
+                }
+                if (status["type"] === 2){
+                    //status is currently booked
                     return status
                 }
+            }
+            if (highestStatus === null){
+                return { "type": 0, "text": `${roomData.name} ${roomData.number} ist frei` }
+            }
+            else {
+                return highestStatus
             }
         }
         return { "type": 0, "text": `${roomData.name} ist frei` }
     }
-    const getSingleStatus = (booking, roomName, now = new Date()) => {
+    const getSingleStatus = (booking, roomData, now = new Date()) => {
         // 0: Free, 1: Booked, 2: Soon to be booked
         let start = new Date(booking.start)
         let end = new Date(booking.end)
-        //console.log(`start: ${start}, end: ${end}, now: ${now}`)
         if (now >= start && now < new Date(end.getTime() + 60 * 1000)) {
             // room is currently booked
             const minutesLeft = Math.floor((end - now) / 1000 / 60) + 1;
-            return { "type": 1, "user": booking.userId, "text": `${roomName} ist für die nächsten ${Math.max(1, minutesLeft)} Minuten gebucht` }
+            return { "type": 2, "user": booking.userId, "text": `${roomData.name} ${roomData.number} ist für die nächsten ${Math.max(1, minutesLeft)} Minuten gebucht` }
         }
         let diff_min = (start - now) / 1000 / 60
         if (diff_min <= 30) {
             //room is soon to be booked
             let mins = Math.floor((start - now) / 1000 / 60) + 1
-            return { "type": 2, "user": booking.userId, "text": `${roomName} ist in ${mins} ${mins > 1 ? 'Minuten' : 'Minute'} gebucht` }
+            return { "type": 1, "user": booking.userId, "text": `${roomData.name} ${roomData.number} ist in ${mins} ${mins > 1 ? 'Minuten' : 'Minute'} gebucht` }
         }
         return null
     }

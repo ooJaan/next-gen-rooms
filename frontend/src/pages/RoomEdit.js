@@ -11,6 +11,7 @@ import { RoomContext } from '../provider/RoomStatus.tsx';
 import Table from "../comps/Table";
 import Loading from "../comps/Loading";
 import BaseLayout from "./BaseLayout.js";
+import BookingDialog from '../comps/BookDialog';
 
 import "../css/RoomEdit.css"
 import "../css/classes.css"
@@ -27,48 +28,56 @@ const CustomInput = ({ name, content }) => {
 
 
 const RoomEdit = () => {
-    const { rooms, roomLoading, types, typesLoading, users, userLoading, update, assets, assetLoading, typeAssets, typeAssetsLoading } = useContext(RoomContext);
+    const { rooms, roomLoading, types, typesLoading, users, userLoading, update, assets, assetsLoading, typeAssets, typeAssetsLoading } = useContext(RoomContext);
     const { id } = useParams();
     const [typeOptions, setTypeOptions] = useState({});
     const [typeOptionsLoading, setTypeOptionsLoading] = useState(true);
+    const [bookDialogClosed, setBookDialogClosed] = useState(true)
     const { formatDate, formatTime } = useDate();
     const { deleteWithAuth } = useApi();
     const { changeRoomMetadata, deleteBooking, deleteRoom, changeTypeAsset, changeRoomAsset } = useModify(id);
     const [actions, setActions] = useState(null);
 
     const navigate = useNavigate()
-    console.log("roomEdit init roomData: ", rooms[id])
 
     useEffect(() => {
-        if (roomLoading | rooms[id] === undefined){
-            return
-        }
-        var options = [];
-        for (let key in types) {
-            if (key !== rooms[id].roomId) {
-                options.push({
-                    "label": types[key]["name"],
-                    "value": key
-                })
+        const createOptions = async () => {
+            if (roomLoading || typesLoading || rooms[id] === undefined){
+                return
             }
+            var options = [];
+            for (let key in types) {
+                if (key !== rooms[id].roomId) {
+                    options.push({
+                        "label": types[key]["name"],
+                        "value": key
+                    })
+                }
+            }
+            await setTypeOptions(options)
+            setTypeOptionsLoading(false);
         }
-        console.log(options)
-        setTypeOptions(options)
-        setTypeOptionsLoading(false);
+        createOptions()
     }, [types, rooms[id]])
 
     useEffect(() => {
         // Set the actions when the component mounts
         setActions(
-            <div>
+            <>
                 <button onClick={() => delRoom()}>Raum löschen</button>
-                <button onClick={() => navigate(`/overview/${id}`)}>Raum buchen</button>
-            </div>
+                <button onClick={() => setBookDialogClosed(false)}>Raum buchen</button>
+            </>
         );
 
         // Cleanup when component unmounts
         return () => setActions(null);
     }, [id]); // Add other dependencies as needed
+
+    if (roomLoading || typeAssetsLoading || typesLoading || typeOptionsLoading || userLoading || assetsLoading) {
+        console.log("loading...")
+        return <Loading />
+    }
+    console.log("no loading anymore: ", assets, assetsLoading)
 
     const setType = async (newTypeId) => {
         console.log(newTypeId)
@@ -85,10 +94,6 @@ const RoomEdit = () => {
         return
     }
 
-    if (roomLoading | typesLoading | typeOptionsLoading | userLoading | assetLoading) {
-        return <Loading />
-    }
-
     const columns = [
         { key: 'date', label: 'Datum', sortable: true },
         { key: 'startTime', label: 'Von', sortable: true },
@@ -99,15 +104,15 @@ const RoomEdit = () => {
             label: 'Actions',
             sortable: false,
             render: (row) => (
-                <button onClick={() => deleteBooking(row.bookingId)}>Löschen</button>
+                <button className="delete-button" onClick={() => deleteBooking(row.bookingId)}>Löschen</button>
             )
         }
     ];
 
     const content = (
-        <div className="room-edit-container flex-vertical">
-            <div className="room-edit flex-horizontal">
-                <div className="metadata">
+        <div className="room-edit-container flex-horizontal">
+            <div className="room-edit flex-vertical">
+                <div className="metadata surface">
                     <div>
                         <h1>{rooms[id].name}</h1>
                         <table>
@@ -137,6 +142,7 @@ const RoomEdit = () => {
                                     name="Raumtyp"
                                     content={
                                         <Select
+                                            classNamePrefix="select"
                                             options={typeOptions}
                                             defaultValue={typeOptions.find(option => option.value === rooms[id].typeId) || null}
                                             onChange={(newType) => setType(newType)}
@@ -171,14 +177,15 @@ const RoomEdit = () => {
                         </table>
                     </div>
                 </div>
-                <div>
-                    <Table
+                <div className="surface">
+                    <div>
+                        <Table
                         head={
                             <tr>
                                 <th>Datum</th>
                                 <th>Von</th>
                                 <th>Bis</th>
-                                <th>User</th>
+                                <th>Benutzer</th>
                                 <th></th>
                             </tr>
                         }
@@ -191,8 +198,9 @@ const RoomEdit = () => {
                                 username: users[booking.userId]?.username || 'Loading...',
                                 bookingId: booking.id
                             }))}
-                        columns={columns}
-                    />
+                            columns={columns}
+                        />
+                    </div>
                 </div>
             </div>
             <div className="assets-container flex-vertical">
@@ -201,26 +209,30 @@ const RoomEdit = () => {
                     id={id}
                     roomLoading={roomLoading}
                     assets={assets}
-                    assetsLoading={assetLoading}
                     changeAnyAsset={changeRoomAsset}
                     anyAsset={rooms[id].roomAsset}
                 />
                 <RoomAssets 
-                    name="Typ-spezifisch"
+                    name="Typspezifisch"
                     id={rooms[id].typeId}
                     roomLoading={roomLoading}
                     assets={assets}
-                    assetsLoading={typeAssetsLoading}
                     changeAnyAsset={changeTypeAsset}
                     anyAsset={Object.entries(typeAssets).filter(([_, asset]) => asset.typeId === rooms[id].typeId).map(([id, asset]) => ({...asset, id}))}
                 />
             </div>
+            <BookingDialog
+                roomData={rooms[id]}
+                modalClosed={bookDialogClosed}
+                setClosed={setBookDialogClosed}
+
+            />
         </div>
     );
 
     return (
         <BaseLayout 
-            title="Edit" 
+            title="Raum bearbeiten" 
             content={content}
             actions={actions}
         />

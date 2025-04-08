@@ -28,9 +28,9 @@ const RoomOverview = () => {
 
     useEffect(() => {
         setActions(
-            <div>
-                <button onClick={() => navigate(`/overview/${id}`)}>Raum buchen</button>
-            </div>
+            <>
+                <button onClick={() => setBookDialogClosed(false)}>Raum buchen</button>
+            </>
         );
 
         return () => setActions(null);
@@ -66,7 +66,7 @@ const RoomOverview = () => {
             sortable: false,
             render: (row) => {
                if(row.userId === c_userId){
-                    return <button onClick={() => deleteBooking(row.bookingId)}>Löschen</button>
+                    return <button className="delete-button" onClick={() => deleteBooking(row.bookingId)}>Löschen</button>
                }else{
                     return <button disabled={true}>Löschen</button>
                }
@@ -100,19 +100,13 @@ const RoomOverview = () => {
 
     const content = (
         <div className="overview">
-            <div className={!statusLoading ? `status-msg status-${status[id]?.type}` : 'status-msg'}>
-                {statusLoading ? (
-                    <></>
-                ) : (
-                    <>{status[id].text}</>
-                )}
+            <div className={`status-msg surface status-${status[id]?.type}`}>
+                {status[id].text}
             </div>
             <div className="overview-container">
 
-                <div>
-                {!roomLoading ? (
-                    <>
-                    <h1>Ausstattung {rooms[id].name}</h1>
+                <div className="surface">
+                    <h1>Ausstattung {rooms[id].name} {rooms[id].number}</h1>
                         <Table
                             head={
                                 <tr>
@@ -123,38 +117,35 @@ const RoomOverview = () => {
                             data={equipmentData}
                             columns={equipmentColumns}
                         />
-                    </>
-                    ) : (
-                        <h1>Loading...</h1>
-                    )}
                 </div>
-                <div>
+                <div className="surface">
                     <h1>Buchungen</h1>
-                    {!roomLoading ? (
-                        <Table
-                            head={
-                                <tr>
-                                    <th>Datum</th>
-                                    <th>Von</th>
-                                    <th>Bis</th>
-                                    <th>User</th>
-                                    <th></th>
-                                </tr>
-                            }
-                            data={bookingData}
-                            columns={bookingColumns}
-                        />
-                    ) : (
-                        <h1>Loading...</h1>
-                    )}
+                    <Table
+                        head={
+                            <tr>
+                                <th>Datum</th>
+                                <th>Von</th>
+                                <th>Bis</th>
+                                <th>Benutzer</th>
+                                <th></th>
+                            </tr>
+                        }
+                        data={bookingData}
+                        columns={bookingColumns}
+                    />
 
                 </div>
             </div>
+            <BookingDialog
+                roomData={rooms[id]}
+                modalClosed={bookDialogClosed}
+                setClosed={setBookDialogClosed}
+            />
         </div>
     )
     return (
         <BaseLayout 
-            title="Overview" 
+            title="Raum Übersicht" 
             content={content}
             actions={actions}
         />

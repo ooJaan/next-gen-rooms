@@ -4,12 +4,12 @@ import Select from 'react-select';
 import { useApi } from "../helpers/api";
 import Table from "../comps/Table";
 import { AuthContext } from "../provider/AuthProvider";
+import Loading from "../comps/Loading";
 
 const RoleSelect = ({ options, value, setValue, disabled }) => {
     return (
         <>
             <Select
-                className="basic-single"
                 classNamePrefix="select"
                 value={value}
                 isDisabled={disabled}
@@ -96,7 +96,7 @@ const Users = () => {
             label: 'Löschen',
             sortable: false,
             render: (row) => (
-                <button 
+                <button className="delete-button" 
                     onClick={() => deleteUser(row.id)}
                     disabled={row.id === c_userId}
                 >
@@ -114,7 +114,7 @@ const Users = () => {
     }));
 
     if(loading) {
-        return "Lade..."
+        return <Loading />
     }
 
     return (
@@ -122,7 +122,7 @@ const Users = () => {
             <Table
                 head={
                     <tr>
-                        <th>Username</th>
+                        <th>Benutzername</th>
                         <th>Email</th>
                         <th>Rolle</th>
                         <th>Löschen</th>

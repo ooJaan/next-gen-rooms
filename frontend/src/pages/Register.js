@@ -64,10 +64,10 @@ const Register = () => {
                 <h1 className="title">Registrieren</h1>
                 {error}
                 <form onSubmit={Submit}>
-                    <input placeholder="Username" onChange={(e) => setLocalUser(e.target.value)} required />
+                    <input placeholder="Benutzername" onChange={(e) => setLocalUser(e.target.value)} required />
                     <input type="email" placeholder="Email" onChange={(e) => setEmail(e.target.value)} required />
                     <input type="password" placeholder="Password" minlenght="4" value={password} onChange={(e) => setPassword(e.target.value)} required />
-                    <input type="password" placeholder="Confirm Password" minlenght="4" value={password1} onChange={(e) => setPassword1(e.target.value)} required />
+                    <input type="password" placeholder="Password wiederholen" minlenght="4" value={password1} onChange={(e) => setPassword1(e.target.value)} required />
                     <button type="submit">Registrieren</button>
                 </form>
                 <div>

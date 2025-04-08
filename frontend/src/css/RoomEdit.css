@@ -1,15 +1,24 @@
 .room-edit {
     display: flex;
     flex-grow: 1;
-    justify-content: space-between;
     border-radius: var(--border-radius);
+    gap: 10px;
+}
+.room-edit-container {
+    gap: 10px;
 }
 
 .room-edit>div {
-    flex-grow: 1;
     padding: 10px;
     flex-basis: 100px;
     border-radius: var(--border-radius);
+    gap: 10px;
+}
+.surface {
+    background-color: var(--surface);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-small);
+    padding: 20px;
 }
 
 .taskbar {
@@ -18,6 +27,8 @@
 }
 
 .assets-container {
+    flex-grow: 1;
+    gap: 10px;
 }
 
 .assets {

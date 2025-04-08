@@ -11,6 +11,7 @@ export default ({options, setOptions, value, setValue, handleCreate}) => {
       isClearable={true}
       isDisabled={isLoading}
       isLoading={isLoading}
+      classNamePrefix="select"
       onChange={(newValue) => setValue(newValue)}
       onCreateOption={handleCreate}
       options={options}

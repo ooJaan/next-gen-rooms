@@ -79,6 +79,7 @@ const ModalContent = ({closeModal}) => {
             if (error.name === "Bad Request") {
                 setError(error.error)
             } else {
+                console.log(error)
                 setError("Ein unbekannter Fehler ist aufgetreten")
             }
         }
@@ -90,16 +91,17 @@ const ModalContent = ({closeModal}) => {
             <h1>Neuen Raum erstellen</h1>
             <div className="error">{error}</div>
             <form>
-                <input type="text" placeholder="Room Name" value={roomName} onChange={(e) => setRoomName(e.target.value)} />
-                <input type="text" placeholder="Room Number" value={roomNumber} onChange={(e) => setRoomNumber(e.target.value)} />
-                <input type="text" placeholder="Room Capacity" value={roomCapacity} onChange={(e) => setRoomCapacity(e.target.value)} />
-                <Select 
+                <input type="text" placeholder="Raum Name" value={roomName} onChange={(e) => setRoomName(e.target.value)} />
+                <input type="text" placeholder="Raum Nummer" value={roomNumber} onChange={(e) => setRoomNumber(e.target.value)} />
+                <input type="text" placeholder="Raum Kapazität" value={roomCapacity} onChange={(e) => setRoomCapacity(e.target.value)} />
+                <Select
+                    classNamePrefix="select"
                     options={roomTypeOptions} 
                     onChange={(e) => setRoomType(e.value)} 
                     placeholder="Raum Typ"
                 />
                 <input type="number" placeholder="Maximale Buchungsdauer" value={maxBookingDuration} onChange={(e) => setMaxBookingDuration(e.target.value)} />
-                <button disabled={disabled} onClick={(e) => handleSubmit(e)}>Create Room</button>
+                <button disabled={disabled} onClick={(e) => handleSubmit(e)}>Raum erstellen</button>
             </form>
         </div>
     )

@@ -44,12 +44,15 @@ const ChangePw = () => {
             "oldPassword": oldPwd,
             "newPassword": newPwd
         }
-        const resp = await postWithAuth("users/change-password", data)
-        if (resp["error"] !== undefined) {
-            console.log(resp["error"])
-            setError(resp["error"])
+        try {
+            await postWithAuth("users/change-password", data)
+        }
+        catch (error) {
+            console.log("error happened while changing password", error)
+            setError(error.error)
             return
         }
+
         if (error === null) {
             console.log("all good --> redir")
             const redirectPath = new URLSearchParams(location.search).get("redirect") || "/";
@@ -60,6 +63,7 @@ const ChangePw = () => {
     return (
         <div className="login-container">
             <div className="login-form">
+                <img src="logo.svg" className="auth-logo"/>
                 <div className="title">
                     Passwort Ändern
                 </div>
