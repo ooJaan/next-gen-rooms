@@ -5,6 +5,7 @@
     gap: 10px;
 }
 .room-edit-container {
+    flex-wrap: wrap;
     gap: 10px;
 }
 

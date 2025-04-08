@@ -18,6 +18,7 @@
   --ff: "Space-Grotesk";
   --h1: bold 1.125rem/1.4em var(--ff);
   --h2: bold 1rem/1.4em var(--ff);
+  --h3: bold 1.5rem/1.4em var(--ff);
   --p: 1rem/1.4em var(--ff);
   --p2: 0.875rem/1.4em var(--ff);
   --shadow-top: 0 -2px 8px 0 rgba(0, 0, 0, 0.2), 0 -5px 20px 0 rgba(0, 0, 0, 0.15);
@@ -49,6 +50,10 @@ body {
 
 h1 {
   font: var(--h1);
+}
+
+h3 {
+  font: var(--h3);
 }
 
 button {

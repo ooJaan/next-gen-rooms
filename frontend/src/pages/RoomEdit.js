@@ -79,10 +79,8 @@ const RoomEdit = () => {
     }, [id]); // Add other dependencies as needed
 
     if (roomLoading || typeAssetsLoading || typesLoading || typeOptionsLoading || userLoading || assetsLoading) {
-        console.log("loading...")
         return <Loading />
     }
-    console.log("no loading anymore: ", assets, assetsLoading)
 
     const setType = async (newTypeId) => {
         console.log(newTypeId)
@@ -113,10 +111,10 @@ const RoomEdit = () => {
 
     const content = (
         <div className="room-edit-container flex-horizontal">
-            <div className="room-edit flex-vertical">
-                <div className="metadata surface">
+            <div className="room-edit flex-vertical  surface">
+                <div className="metadata">
                     <div>
-                        <h1>{rooms[id].name}</h1>
+                        <h3>{rooms[id].name}</h3>
                         <table>
                             <tbody>
                                 <CustomInput
@@ -179,7 +177,7 @@ const RoomEdit = () => {
                         </table>
                     </div>
                 </div>
-                <div className="surface">
+                <div>
                     <div>
                         <Table
                         head={
@@ -205,7 +203,8 @@ const RoomEdit = () => {
                     </div>
                 </div>
             </div>
-            <div className="assets-container flex-vertical">
+            <div className="assets-container flex-vertical surface">
+                <h3>Ausstattung</h3>
                 <RoomAssets 
                     name="Raumspezifisch" 
                     id={id}

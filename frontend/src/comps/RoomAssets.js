@@ -68,7 +68,7 @@ const RoomAssets = ({ name, id, roomId, assets, assetsLoading, anyAsset, changeA
             try {
                 const newAssetId = await changeAsset({ "name": newOptions[i] }, newOptions[i], methods.NEW)
                 console.log("new asset created id: ", newAssetId)
-                await changeAnyAsset({ "roomId": id, "assetId": newAssetId, "assetCount": stueck }, newOptions[i], methods.NEW)
+                await changeAnyAsset({ "roomId": id, "assetId": newAssetId, "assetCount": stueck }, newAssetId, methods.NEW)
             }
             catch (error) {
                 console.log("error: ", error)
@@ -81,6 +81,10 @@ const RoomAssets = ({ name, id, roomId, assets, assetsLoading, anyAsset, changeA
         console.log(value, stueck);
         for (let i = 0; i < value.length; i++) {
             var v = value[i]
+            if (!v.value) {
+                console.log("value is not set: ", v)
+                continue
+            }
             console.debug("setting new value: ", v)
             await changeAnyAsset({ "roomId": id, "assetId": v.value, "assetCount": stueck }, v.value, methods.NEW)
         }
@@ -99,7 +103,7 @@ const RoomAssets = ({ name, id, roomId, assets, assetsLoading, anyAsset, changeA
                 return
             }
         }
-        const newOption = { "label": inputValue, "value": inputValue }
+        const newOption = { "label": inputValue }
         setNewOptions([...newOptions, inputValue])
         setOptions((prev) => [...prev, newOption]);
         console.log("new Option created: ", newOptions)
@@ -144,7 +148,6 @@ const RoomAssets = ({ name, id, roomId, assets, assetsLoading, anyAsset, changeA
             )
         }
     ];
-    console.log(assets)
 
     const tableData = Object.entries(anyAsset).map(([key, data]) => ({
         id: data.id,
@@ -154,7 +157,7 @@ const RoomAssets = ({ name, id, roomId, assets, assetsLoading, anyAsset, changeA
     }));
 
     return (
-        <div className="surface">
+        <div>
             <div className="assets">
             <h1>{name}</h1>
             <div>
