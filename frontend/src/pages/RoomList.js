@@ -13,6 +13,7 @@ import Loading from '../comps/Loading';
 import { useApi } from "../helpers/api";
 import { AuthContext } from '../provider/AuthProvider';
 import { RoomContext } from '../provider/RoomStatus.tsx';
+import BaseLayout from './BaseLayout';
 
 const BuchungsButton = ({ openModal, raumData, raumnr, raumName }) => {
     const data={"nr": raumnr, "name": raumName}
@@ -27,7 +28,7 @@ const BuchungsButton = ({ openModal, raumData, raumnr, raumName }) => {
 
 
 
-const RoomList =  ({}) => {
+const RoomList = () => {
     const { rooms, roomLoading, status, statusLoading, types, typesLoading } = useContext(RoomContext)
     const [ modalClosed, setModalClosed] = useState(true)
     const [ roomDialogClosed, setRoomDialogClosed] = useState(true)
@@ -48,6 +49,10 @@ const RoomList =  ({}) => {
     const openRoomDialog = () => {
         setRoomDialogClosed(false)
     }
+
+    const actions = c_role === "Administrator" ? (
+        <button onClick={openRoomDialog}>Neuer Raum</button>
+    ) : null;
 
     if (roomLoading || typesLoading || statusLoading) {
         return <Loading />
@@ -131,11 +136,9 @@ const RoomList =  ({}) => {
 
 
     if (error) return <p>{error}</p>;
-    return (
+    
+    const content = (
         <div>
-            {c_role === "Administrator" ? (
-                <button onClick={openRoomDialog}>Neuer Raum</button>
-            ) : null}
             <Table
                 head={
                     <tr>
@@ -162,9 +165,16 @@ const RoomList =  ({}) => {
                 setClosed={setRoomDialogClosed}
                 modalClosed={roomDialogClosed}
             />
-
         </div>
-    )
+    );
+
+    return (
+        <BaseLayout 
+            title="Räume" 
+            content={content}
+            actions={actions}
+        />
+    );
 };
 
 

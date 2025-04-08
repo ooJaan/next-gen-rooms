@@ -6,19 +6,17 @@ import { AuthContext } from "../provider/AuthProvider";
 import NavBar from './NavBar';
 
 
-const BaseLayout = ({ content, title }) => {
+const BaseLayout = ({ content, title, actions }) => {
     const { c_user } = useContext(AuthContext);
     const { loggedIn } = useContext(AuthContext);
     const location = useLocation();
-
     return (
         <div className="wrapper">
-            <NavBar title={title}/>
+            <NavBar title={title} actions={actions}/>
             <div className="content">
                 { content }
             </div>
         </div>
-
     );
 }
 
