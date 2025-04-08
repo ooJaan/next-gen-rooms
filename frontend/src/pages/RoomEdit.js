@@ -25,13 +25,13 @@ const CustomInput = ({ name, content }) => {
 }
 
 const RoomEdit = () => {
-    const { rooms, roomLoading, types, typesLoading, users, userLoading, update, assets, assetLoading } = useContext(RoomContext);
+    const { rooms, roomLoading, types, typesLoading, users, userLoading, update, assets, assetLoading, typeAssets, typeAssetsLoading } = useContext(RoomContext);
     const { id } = useParams();
     const [typeOptions, setTypeOptions] = useState({});
     const [typeOptionsLoading, setTypeOptionsLoading] = useState(true);
     const { formatDate, formatTime } = useDate();
     const { deleteWithAuth } = useApi();
-    const { changeRoomMetadata, deleteBooking, deleteRoom } = useModify(id);
+    const { changeRoomMetadata, deleteBooking, deleteRoom, changeTypeAsset, changeRoomAsset } = useModify(id);
 
     const navigate = useNavigate()
     console.log("roomEdit init roomData: ", rooms[id])
@@ -56,10 +56,7 @@ const RoomEdit = () => {
 
     const setType = async (newTypeId) => {
         console.log(newTypeId)
-        var updatedRoom = { ...rooms[id] };
-        updatedRoom.typeId = newTypeId.value
-        console.log(updatedRoom)
-        //todo modify rooms
+        await changeRoomMetadata("typeId", newTypeId.value, id)
     }
 
     const delRoom = async () => {
@@ -76,11 +73,30 @@ const RoomEdit = () => {
         return <Loading />
     }
 
+    const columns = [
+        { key: 'date', label: 'Datum', sortable: true },
+        { key: 'startTime', label: 'Von', sortable: true },
+        { key: 'endTime', label: 'Bis', sortable: true },
+        { key: 'username', label: 'User', sortable: true },
+        { 
+            key: 'actions', 
+            label: 'Actions',
+            sortable: false,
+            render: (row) => (
+                <button onClick={() => deleteBooking(row.bookingId)}>Delete</button>
+            )
+        }
+    ];
 
     return (
-        <div className="room-edit flex-horizontal">
-            <div className="metadata">
-                <div>
+        <div className="room-edit-container flex-vertical">
+            <div className="taskbar flex-horizontal">
+                <button onClick={() => delRoom()}>Raum löschen</button>
+                <button onClick={() => delRoom()}>Raum buchen</button>
+            </div>
+            <div className="room-edit flex-horizontal">
+                <div className="metadata">
+                    <div>
                     <h1>{rooms[id].name}</h1>
                     <table>
                         <tbody>
@@ -143,52 +159,49 @@ const RoomEdit = () => {
                     </table>
                 </div>
                 <div>
-
-                    {!roomLoading ? (
-                        <Table
-                            head={
-                                <tr>
-                                    <th>Datum</th>
-                                    <th>Von</th>
-                                    <th>Bis</th>
-                                    <th>User</th>
-                                    <th></th>
-                                </tr>
-                            }
-                            body={rooms[id].bookings.map((data, index) => (
-                                <tr key={data.id}>
-                                    <td>{formatDate(data.start)}</td>
-                                    <td>{formatTime(data.start)}</td>
-                                    <td>{formatTime(data.end)}</td>
-                                    {!userLoading && users[data.userId] ? (
-                                        <td>{users[data.userId].username}</td>
-                                    ) : (
-                                        <td>Loading...</td>
-                                    )}
-                                    <td>
-                                        <button onClick={() => deleteBooking(data.id)}>Delete</button>
-                                    </td>
-                                </tr>
-                            ))}
-                        />
-                    ) : (
-                        <h1>Loading...</h1>
-                    )}
+                    <Table
+                        head={
+                            <tr>
+                                <th>Datum</th>
+                                <th>Von</th>
+                                <th>Bis</th>
+                                <th>User</th>
+                                <th></th>
+                            </tr>
+                        }
+                        data={rooms[id].bookings.map(booking => ({
+                            date: formatDate(booking.start),
+                            startTime: formatTime(booking.start),
+                            endTime: formatTime(booking.end),
+                            username: users[booking.userId]?.username || 'Loading...',
+                            bookingId: booking.id
+                        }))}
+                        columns={columns}
+                    />
                 </div>
             </div>
             <div className="assets-container flex-vertical">
-                {roomLoading ? (
-                    <h1>Loading...</h1>
-                )
-                : (
-                    <>
-                        <button onClick={() => delRoom()}>Delete Room</button>
-                        <RoomAssets name="Raumspezifisch" roomId={id} roomLoading={roomLoading}/>
-                    </>
-                )
-                }
+                <RoomAssets 
+                    name="Raumspezifisch" 
+                    id={id}
+                    roomLoading={roomLoading}
+                    assets={assets}
+                    assetsLoading={assetLoading}
+                    changeAnyAsset={changeRoomAsset}
+                    anyAsset={rooms[id].roomAsset}
+                />
+                <RoomAssets 
+                    name="Typ-spezifisch"
+                    id={rooms[id].typeId}
+                    roomLoading={roomLoading}
+                    assets={assets}
+                    assetsLoading={typeAssetsLoading}
+                    changeAnyAsset={changeTypeAsset}
+                    anyAsset={Object.entries(typeAssets).filter(([_, asset]) => asset.typeId === rooms[id].typeId).map(([id, asset]) => ({...asset, id}))}
+                />
             </div>
 
+        </div>
         </div>
     )
 }

@@ -74,10 +74,13 @@ const ModalContent = ({closeModal}) => {
                 typeId: roomType
             })
             console.log("created new room:", resp)
-            await new Promise(resolve => setTimeout(resolve, 100));
             navigate(`/edit/${resp}`)
         } catch (error) {
-            console.log(error)
+            if (error.name === "Bad Request") {
+                setError(error.error)
+            } else {
+                setError("Ein unbekannter Fehler ist aufgetreten")
+            }
         }
     }
 

@@ -49,10 +49,87 @@ const RoomList =  ({}) => {
         setRoomDialogClosed(false)
     }
 
-
     if (roomLoading || typesLoading || statusLoading) {
         return <Loading />
     }
+
+    const columns = [
+        { 
+            key: 'status', 
+            label: 'Status',
+            sortable: true,
+            render: (row) => (
+                <div className={`status-${status[row.roomId]?.type} t-status`} style={{display: 'flex', alignItems: 'center', height: '100%', margin: 'auto'}}>
+                    <svg height="20" width="20">
+                        <circle cx="10" cy="10" r="10" fill="currentColor" />
+                    </svg>
+                </div>
+            )
+        },
+        { 
+            key: 'name', 
+            label: 'Name',
+            sortable: true,
+            render: (row) => <Link to={`/overview/${row.roomId}`}>{row.name}</Link>
+        },
+        { key: 'number', label: 'RaumNr', sortable: true },
+        { key: 'capacity', label: 'Kapazität', sortable: true },
+        { 
+            key: 'type', 
+            label: 'Typ',
+            sortable: false,
+            render: (row) => types[row.typeId]?.name || 'Loading...'
+        },
+        { key: 'equipment', label: 'Austattung', sortable: false },
+        { 
+            key: 'booking', 
+            label: 'Booking',
+            sortable: false,
+            render: (row) => (
+                <BuchungsButton 
+                    openModal={openModal} 
+                    raumData={row} 
+                    raumnr={row.roomId} 
+                    raumName={row.name}
+                />
+            )
+        },
+        { 
+            key: 'settings', 
+            label: 'Settings',
+            sortable: false,
+            render: (row) => (
+                c_role === "Administrator" ? (
+                    <div 
+                        style={{
+                            display: 'flex', 
+                            alignItems: 'center', 
+                            height: '100%', 
+                            cursor: 'pointer', 
+                            color: '#ffddaa'
+                        }} 
+                        onClick={() => navigate(`/edit/${row.roomId}`)}
+                    >
+                        <img src="/settings.svg" alt="Settings" style={{width: '40px', height: '40px'}} />
+                    </div>
+                ) : null
+            )
+        }
+    ];
+
+    const tableData = Object.entries(rooms).map(([key, row]) => ({
+        roomId: row.roomId,
+        status: status[key]?.type,
+        name: row.name,
+        number: row.number,
+        capacity: row.capacity,
+        typeId: row.typeId,
+        equipment: row.Auststattung
+    }));
+
+    console.log("tableData: ", tableData)
+
+
     if (error) return <p>{error}</p>;
     return (
         <div>
@@ -72,37 +149,8 @@ const RoomList =  ({}) => {
                         <th></th>
                     </tr>
                 }
-                body={Object.entries(rooms).map(([key, row]) => (
-                    <tr key={key} name={key}>
-                        <td className={`status-${status[key]?.type} t-status`}>
-                            <div style={{display: 'flex', alignItems: 'center', height: '100%', margin: 'auto'}}>
-                                <svg height="20" width="20">
-                                    <circle cx="10" cy="10" r="10" fill="currentColor" />
-                                </svg>
-                            </div>
-                        </td>
-                        
-                        <td className='t-name'><Link className="table-data-name" to={`/overview/${row.roomId}`}><div>{row.name}</div></Link></td>
-                        <td className='t-nr'>{row.number}</td>
-                        <td className='t-cap'>{row.capacity}</td>
-                        <td className='t-type'>
-                            {!typesLoading ? (
-                                <>{types[row.typeId].name}</>
-                            ): null }
-                        </td>
-                        <td className='t-assets'>{row.Auststattung}</td>
-                        <td>
-                            <BuchungsButton openModal={openModal} raumData={row} raumnr={row.roomId} raumName={row.name}/>
-                        </td>
-                        <td>
-                            {c_role === "Administrator" ? (
-                                <div style={{display: 'flex', alignItems: 'center', height: '100%', cursor: 'pointer', color: '#ffddaa'}} onClick={() => navigate(`/edit/${row.roomId}`)}>
-                                    <img src="/settings.svg" alt="Settings" style={{width: '40px', height: '40px'}} />
-                                </div>
-                            ):null}
-                        </td>
-                    </tr>
-                ))}
+                data={tableData}
+                columns={columns}
             />
 
             <BookingDialog

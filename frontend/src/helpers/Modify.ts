@@ -14,7 +14,7 @@ export enum methods {
 }
 export const useModify = (roomId: string) => {
     const { postWithAuth, patchWithAuth, deleteWithAuth } = useApi()
-    const { assets, setAssets, rooms, setRooms, getAllstatus } = useContext(RoomContext)
+    const { assets, setAssets, rooms, setRooms, getAllstatus, typeAssets, setTypeAssets } = useContext(RoomContext)
     /** 
      *  updates an asset and syncs it with the backend
      * @param body: essentially the body of the request
@@ -109,12 +109,60 @@ export const useModify = (roomId: string) => {
                 break;
         }
     }
+
+    const changeTypeAsset = async (newAsset, id, method: methods) => {
+        console.log("new typeAsset: ", newAsset)
+        newAsset["typeId"] = newAsset["roomId"]
+        delete newAsset["roomId"]
+        let resp;
+        switch (method) {
+            case methods.NEW:
+                console.debug("creating new type asset: ", newAsset)
+                resp = await postWithAuth("type-assets", newAsset)
+                if (resp !== null) {
+                    let newTypeAssets = { ...typeAssets }
+                    console.debug(`newTypeAssets: ${JSON.stringify(newTypeAssets)}, resp: ${JSON.stringify(resp)}`)
+                    newTypeAssets[resp.id] = {
+                        "typeId": resp.typeId,
+                        "name": resp.name,
+                        "assetCount": resp.assetCount,
+                        "assetId": resp.assetId
+                    }
+                    setTypeAssets(newTypeAssets)
+                }
+                break;
+            case methods.UPDATE:
+                //change roomid or stuff like that
+                console.debug("patching type asset: ", newAsset)
+                resp = await patchWithAuth(`type-assets/${id}`, newAsset)
+                if (resp) {
+                    let newTypeAssets = { ...typeAssets }
+                    newTypeAssets[id].assetCount = resp.assetCount
+                    newTypeAssets[id].name = resp.name
+                    newTypeAssets[id].typeId = resp.typeId
+                    newTypeAssets[id].assetId = resp.assetId
+                    console.log("newTypeAssets: ", newTypeAssets)
+                    setTypeAssets(newTypeAssets)
+                }
+                break;
+            case methods.DELETE:
+                console.debug("deleting type asset: ", id)
+                resp = await deleteWithAuth(`type-assets/${id}`)
+                let newTypeAssets = { ...typeAssets };
+                delete newTypeAssets[id]
+                setTypeAssets(newTypeAssets)
+                break;
+        }
+    }
+
+
     const changeRoomMetadata = async (key: string, value: string, id: string) => {
         let body = {
             "name": rooms[id].name,
             "roomNumber": rooms[id].number,
             "capacity": rooms[id].capacity,
-            "maxDuration": rooms[id].maxDuration
+            "maxDuration": rooms[id].maxDuration,
+            "typeId": rooms[id].typeId
         }
         body[key] = value
         let resp = await patchWithAuth(`room/${id}`, body)
@@ -132,7 +180,7 @@ export const useModify = (roomId: string) => {
         if (resp) {
             let newRooms = { ...rooms }
             let newRoom = {
-                "roomId": resp.id,
+                "roomId": resp,
                 "name": room.name,
                 "number": room.roomNumber,
                 "capacity": room.capacity,
@@ -141,7 +189,7 @@ export const useModify = (roomId: string) => {
                 "bookings": [],
                 "roomAsset": []
             }
-            newRooms[resp.id] = newRoom
+            newRooms[id] = newRoom
             await setRooms(newRooms)
         }
         return resp
@@ -185,12 +233,10 @@ export const useModify = (roomId: string) => {
         newRooms[resp.roomId].bookings.push(newBooking)
         setRooms(newRooms)
     }
-    const changeRoomType = async (typeId: string, id: string) => {
-
-    }
     return { 
         changeAsset, 
         changeRoomAsset, 
+        changeTypeAsset,
         changeRoomMetadata, 
         deleteBooking, 
         createRoom, 
