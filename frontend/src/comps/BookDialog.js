@@ -63,15 +63,15 @@ const ModalContent = ({ roomData = null, setClosed }) => {
         console.log(`${start} end: ${end}`)
         const now = new Date();
         if (!startTime | !endTime) {
-            setError("no start or endtime")
+            setError("Keine Start oder Endzeit")
             return
         }
         if (now > startTime) {
-            setError("kann keinen raum rückwirkend buchen")
+            setError("Startzeit muss in der Zukunft liegen")
             return
         }
         if (start > end) {
-            setError("start muss vor dem Ende sein")
+            setError("Start muss vor dem Ende liegen")
             return
         }
         if (attendees > roomData.capacity) {
@@ -81,7 +81,7 @@ const ModalContent = ({ roomData = null, setClosed }) => {
         const durationMin = (end - start) / (1000 * 60)
         console.log(`max-duration ${roomData.maxDuration} diff ${durationMin}`)
         if (durationMin > roomData.maxDuration) {
-            setError(`Raum kann nicht länger als ${roomData.maxDuration}min gebucht werden`)
+            setError(`Raum kann nicht länger als ${roomData.maxDuration} Minuten gebucht werden`)
             return
         }
         if (error !== null) {

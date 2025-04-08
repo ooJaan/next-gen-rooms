@@ -2,6 +2,8 @@ import React, { useState, useEffect, useContext } from "react";
 import { useParams, useNavigate } from 'react-router-dom';
 
 import { RoomContext } from "../provider/RoomStatus.tsx";
+import { useModify } from '../helpers/Modify.ts';
+
 
 import { useApi } from '../helpers/api';
 import useDate from '../helpers/Date';
@@ -13,7 +15,8 @@ const RoomOverview = () => {
     const { rooms, roomLoading, users, userLoading, status, statusLoading, assets, assetLoading, typeAssets, typeAssetsLoading } = useContext(RoomContext);
     const { id } = useParams();
     const { formatDate, formatTime } = useDate();
-    const navigate = useNavigate()
+    const navigate = useNavigate();
+    const { deleteBooking } = useModify(id);
 
     const equipmentColumns = [
         { key: 'name', label: 'Name', sortable: true },
@@ -29,6 +32,14 @@ const RoomOverview = () => {
             label: 'User',
             sortable: true,
             render: (row) => users[row.userId]?.username || 'Loading...'
+        },
+        {   
+            key: 'action',
+            label: 'Action',
+            sortable: false,
+            render: (row) => (
+                <button onClick={() => deleteBooking(row.bookingId) || null}>Löschen</button>
+            )        
         }
     ];
 
@@ -49,7 +60,8 @@ const RoomOverview = () => {
         date: formatDate(booking.start),
         startTime: formatTime(booking.start),
         endTime: formatTime(booking.end),
-        userId: booking.userId
+        userId: booking.userId,
+        bookingId: booking.id
     }));
 
     if (typeAssetsLoading || roomLoading || userLoading || assetLoading || statusLoading) {
@@ -101,6 +113,7 @@ const RoomOverview = () => {
                                     <th>Von</th>
                                     <th>Bis</th>
                                     <th>User</th>
+                                    <th></th>
                                 </tr>
                             }
                             data={bookingData}
