@@ -16,27 +16,28 @@ import BaseLayout from './BaseLayout';
 import '../css/RoomOverview.css'
 
 const RoomOverview = () => {
-    const { rooms, roomLoading, users, userLoading, status, statusLoading, assets, assetsLoading, typeAssets, typeAssetsLoading } = useContext(RoomContext);
+    const { rooms, roomLoading, users, userLoading, status, statusLoading, assets, assetsLoading, typeAssets, typeAssetsLoading, types, typesLoading } = useContext(RoomContext);
     const { id } = useParams();
     const [bookDialogClosed, setBookDialogClosed] = useState(true)
     const [actions, setActions] = useState(null)
     const { formatDate, formatTime } = useDate();
     const navigate = useNavigate()
     const { deleteBooking } = useModify(id);
-    const { c_userId } = useContext(AuthContext);
-
+    const { c_userId, c_role } = useContext(AuthContext);
 
     useEffect(() => {
-        setActions(
-            <>
-                <button onClick={() => setBookDialogClosed(false)}>Raum buchen</button>
-            </>
-        );
+        if (c_role !== "Viewer") {
+            setActions(
+                <>
+                    <button onClick={() => setBookDialogClosed(false)}>Raum buchen</button>
+                </>
+            );
+        }
 
         return () => setActions(null);
-    }, [id]);
+    }, [id, c_role]);
 
-    if (typeAssetsLoading || roomLoading || userLoading || assetsLoading || statusLoading) {
+    if (typeAssetsLoading || roomLoading || userLoading || assetsLoading || statusLoading || typesLoading) {
         return <Loading />
     }
     if (rooms[id] === undefined) {
@@ -65,11 +66,14 @@ const RoomOverview = () => {
             label: 'Action',
             sortable: false,
             render: (row) => {
-               if(row.userId === c_userId){
-                    return <button className="delete-button" onClick={() => deleteBooking(row.bookingId)}>Löschen</button>
-               }else{
-                    return <button disabled={true}>Löschen</button>
-               }
+                if(c_role !== "Viewer"){
+                    if(row.userId === c_userId){
+                        return <button className="delete-button" onClick={() => deleteBooking(row.bookingId)}>Löschen</button>
+                    }else{
+                        return <button disabled={true}>Löschen</button>
+                    }
+                }
+                return null
             }
         }
     ];
@@ -78,14 +82,17 @@ const RoomOverview = () => {
         ...rooms[id].roomAsset.map(data => ({
             name: !assetsLoading && assets[data.assetId] ? assets[data.assetId].name : 'Loading...',
             count: data.assetCount
-        })),
-        ...Object.values(typeAssets)
-            .filter(data => data.typeId === rooms[id].typeId)
-            .map(data => ({
-                name: assets[data.assetId].name,
-                count: data.assetCount
-            }))
+        }))
     ];
+
+    const additionalEquipmentData = [
+        ...Object.values(typeAssets)
+        .filter(data => data.typeId === rooms[id].typeId)
+        .map(data => ({
+            name: assets[data.assetId].name,
+            count: data.assetCount
+        }))
+    ]
 
     const bookingData = rooms[id].bookings.map(booking => ({
         date: formatDate(booking.start),
@@ -106,7 +113,7 @@ const RoomOverview = () => {
             <div className="overview-container">
 
                 <div className="surface">
-                    <h1>Ausstattung {rooms[id].name} {rooms[id].number}</h1>
+                    <h1>Ausstattung-{rooms[id].name} {rooms[id].number}</h1>
                         <Table
                             head={
                                 <tr>
@@ -115,6 +122,17 @@ const RoomOverview = () => {
                                 </tr>
                             }
                             data={equipmentData}
+                            columns={equipmentColumns}
+                        />
+                        <h1>Ausstattung - {types[rooms[id].typeId]?.name}</h1>
+                        <Table
+                            head={
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Stück</th>
+                                </tr>
+                            }
+                            data={additionalEquipmentData}
                             columns={equipmentColumns}
                         />
                 </div>

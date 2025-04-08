@@ -60,6 +60,11 @@ const RoomEdit = () => {
         createOptions()
     }, [types, rooms[id]])
 
+    const delRoom = async () => {
+        await deleteRoom(id)
+        navigate("/")
+    }
+
     useEffect(() => {
         // Set the actions when the component mounts
         setActions(
@@ -84,10 +89,7 @@ const RoomEdit = () => {
         await changeRoomMetadata("typeId", newTypeId.value, id)
     }
 
-    const delRoom = async () => {
-        await deleteRoom(id)
-        navigate("/")
-    }
+
     if (rooms[id] === undefined && !roomLoading) {
         console.log("room not found --> redirecting to home")
         navigate("/")

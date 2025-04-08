@@ -9,14 +9,14 @@ const UserSection = ({loggedIn, user}) => {
     if (loggedIn ){
         return (
             <div className='nav-user'>
-                <button className='user-button'>
+                <div className='user-container'>
                     {user}
-                </button>
+                </div>
                 <div className='user-dropdown'>
-                    <Link to="/change-pw">Passwort ändern</Link>
-                    <Link to="/my-bookings">Meine Buchungen</Link>
-                    <Link to="/logout">Logout</Link>
+                    {c_role !== "Viewer" && <Link to="/my-bookings">Meine Buchungen</Link>}
                     {c_role === "Administrator" && <Link to="/users">Benutzer verwalten</Link>}
+                    <Link to="/change-pw">Passwort ändern</Link>
+                    <Link to="/logout">Logout</Link>
                 </div>
             </div>
         )

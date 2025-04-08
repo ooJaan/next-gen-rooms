@@ -163,7 +163,7 @@ export const RoomProvider = ({ children }) => {
                 return highestStatus
             }
         }
-        return { "type": 0, "text": `${roomData.name} ist frei` }
+        return { "type": 0, "text": `${roomData.name} ${roomData.number} ist frei` }
     }
     const getSingleStatus = (booking, roomData, now = new Date()) => {
         // 0: Free, 1: Booked, 2: Soon to be booked

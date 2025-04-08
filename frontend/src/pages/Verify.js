@@ -72,7 +72,7 @@ const Verify = () => {
         <div className="login-container">
             <div className="login-form">
                 <div className="title">
-                    Verify Email
+                    Email verifizieren
                 </div>
                 <div className="error">
                     {error}

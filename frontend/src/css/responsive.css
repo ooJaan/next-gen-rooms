@@ -3,7 +3,7 @@
     .t-cap,
     .t-assets,
     .t-nr {
-        display: none;
+        display: none !important;
     }
 
     .room-edit {

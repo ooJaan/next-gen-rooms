@@ -24,6 +24,8 @@ export const useModify = (roomId: string) => {
     const changeAsset = async (body: object, id: string, method: methods) => {
         console.log("modifying room asset: ", body)
         let resp;
+        let oldAssets = { ...assets };
+        let newAssets = { ...assets };
         switch (method) {
             case methods.NEW:
                 resp = await postWithAuth("assets", body)
@@ -37,12 +39,14 @@ export const useModify = (roomId: string) => {
                     setAssets({ ...assets, ...newA })
                 }
                 return resp.assetId
-                break;
             case methods.UPDATE:
-                resp = await patchWithAuth(`assets/${id}`, body)
-                if (resp) {
-                    let newAssets = { ...assets }
-                    newAssets[id]["name"] = resp.name
+                try {
+                    patchWithAuth(`assets/${id}`, body)
+                    newAssets[id]["name"] = body.name
+                    setAssets(newAssets)
+                }
+                catch (error) {
+                    setAssets(oldAssets)
                 }
                 break
             case methods.DELETE:
@@ -65,6 +69,8 @@ export const useModify = (roomId: string) => {
     const changeRoomAsset = async (newAsset, id, method: methods) => {
         console.log("new asset: ", newAsset)
         let resp;
+        let oldRooms = { ...rooms };
+        let newRooms = { ...rooms };
         switch (method) {
             case methods.NEW:
                 console.debug("creating new room asset: ", newAsset)
@@ -77,11 +83,8 @@ export const useModify = (roomId: string) => {
                 }
                 break;
             case methods.UPDATE:
-                //change roomid or stuff like that
-                console.debug("patching room asset: ", newAsset)
-                resp = await patchWithAuth(`room-assets/${id}`, newAsset)
-                if (resp) {
-                    let newRooms = { ...rooms }
+                try {
+                    patchWithAuth(`room-assets/${id}`, newAsset)
                     let assets = newRooms[newAsset.roomId].roomAsset
                     for (let i = 0; i < assets.length; i++) {
                         if (assets[i].assetId === resp.assetId) {
@@ -91,11 +94,12 @@ export const useModify = (roomId: string) => {
                     }
                     setRooms(newRooms)
                 }
+                catch (error) {
+                    setRooms(oldRooms)
+                }
                 break;
             case methods.DELETE:
                 console.debug("deleting room asset: ", id)
-                let newRooms = { ...rooms };
-                let oldRooms = { ...rooms };
                 try {
                     deleteWithAuth(`room-assets/${id}`)
                     let assets = newRooms[newAsset.roomId].roomAsset
@@ -169,13 +173,16 @@ export const useModify = (roomId: string) => {
             "maxDuration": rooms[id].maxDuration,
             "typeId": rooms[id].typeId
         }
+        let oldRooms = { ...rooms };
+        let newRooms = { ...rooms };
         body[key] = value
-        let resp = await patchWithAuth(`room/${id}`, body)
-        if (resp) {
-            let newRooms = { ...rooms }
+        try {
+            patchWithAuth(`room/${id}`, body)
             newRooms[id][key] = value
             setRooms(newRooms)
-
+        }
+        catch (error) {
+            setRooms(oldRooms)
         }
     }
     const createRoom = async (room: object) => {
@@ -206,14 +213,23 @@ export const useModify = (roomId: string) => {
         delete newRooms[roomId]
         await setRooms(newRooms)
     }
-    const deleteBooking = async (bookingId: string) => {
-        let resp = await deleteWithAuth(`booking/${bookingId}`)
-        let newRooms = { ...rooms }
-        newRooms[roomId].bookings = newRooms[roomId].bookings.filter(booking => 
-            booking && booking.id !== bookingId
-        );
-        setRooms(newRooms)
-        getAllstatus()
+    const deleteBooking = async (bookingId: string, c_roomId: string = roomId) => {
+        let oldRooms = { ...rooms };
+        let newRooms = { ...rooms };
+        console.log("c_roomId: ", c_roomId)
+        console.log("deleting booking: ", bookingId, oldRooms)
+        try {
+            await deleteWithAuth(`booking/${bookingId}`)
+            newRooms[c_roomId].bookings = newRooms[c_roomId].bookings.filter(booking => 
+                booking.id !== bookingId
+            );
+            setRooms(newRooms)
+            getAllstatus()
+        }
+        catch (error) {
+            setRooms(oldRooms)
+            throw error
+        }
     }
 
     const createBooking = async (booking: object) => {
@@ -230,12 +246,28 @@ export const useModify = (roomId: string) => {
         newRooms[resp.roomId].bookings.push(newBooking)
         setRooms(newRooms)
     }
+
+    const changeBooking = async (booking: object) => {
+        let oldRooms = { ...rooms };
+        let newRooms = { ...rooms };
+        try {
+            patchWithAuth(`booking/${booking.id}`, booking)
+            newRooms[booking.roomId].bookings = newRooms[booking.roomId].bookings.map(booking => 
+                booking && booking.id === booking.id ? booking : null
+            );
+            setRooms(newRooms)
+        }
+        catch (error) {
+            setRooms(oldRooms)
+        }
+    }
     return { 
         changeAsset, 
         changeRoomAsset, 
         changeTypeAsset,
         changeRoomMetadata, 
-        deleteBooking, 
+        deleteBooking,
+        changeBooking,
         createRoom, 
         deleteRoom, 
         createBooking 

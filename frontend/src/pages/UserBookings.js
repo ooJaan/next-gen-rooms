@@ -28,6 +28,19 @@ const UserBookings = () => {
            .then(() => setLoading(false))
     }, [loggedIn, c_userId])
 
+    const deleteLocalBooking = async (bookingId, roomId) => {
+        let newBookings = { ...bookings }
+        let oldBookings = { ...bookings }
+
+        delete newBookings[bookingId]
+        setBookings(newBookings)
+        try {
+            await deleteBooking(bookingId, roomId)
+        } catch (error) {
+            setBookings(oldBookings)
+        }
+    }
+
     const columns = [
         { 
             key: 'roomName', 
@@ -43,7 +56,7 @@ const UserBookings = () => {
             label: 'Löschen',
             sortable: false,
             render: (row) => (
-                <button className="delete-button" onClick={() => deleteBooking(row.id)}>Delete</button>
+                <button className="delete-button" onClick={() => deleteLocalBooking(row.id, row.roomId)}>Delete</button>
             )
         }
     ];

@@ -63,8 +63,9 @@ const RoomList = () => {
             key: 'status', 
             label: 'Status',
             sortable: true,
+            className: 't-status',
             render: (row) => (
-                <div className={`status-${status[row.roomId]?.type} t-status`} style={{display: 'flex', alignItems: 'center', height: '100%', margin: 'auto'}}>
+                <div className={`t-status status-${status[row.roomId]?.type} t-status`} style={{display: 'flex', alignItems: 'center', height: '100%', margin: 'auto'}}>
                     <svg height="20" width="20">
                         <circle cx="10" cy="10" r="10" fill="currentColor" />
                     </svg>
@@ -74,29 +75,34 @@ const RoomList = () => {
         { 
             key: 'name', 
             label: 'Name',
+            className: 't-name',
             sortable: true,
             render: (row) => <Link className="table-data-name" to={`/overview/${row.roomId}`}>{row.name}</Link>
         },
-        { key: 'number', label: 'RaumNr', sortable: true },
-        { key: 'capacity', label: 'Kapazität', sortable: true },
+        { key: 'number', label: 'RaumNr', className: 't-nr', sortable: true },
+        { key: 'capacity', label: 'Kapazität', className: 't-cap', sortable: true },
         { 
             key: 'type', 
             label: 'Typ',
+            className: 't-type',
             sortable: false,
             render: (row) => types[row.typeId]?.name || 'Loading...'
         },
-        { key: 'equipment', label: 'Austattung', sortable: false },
+        { key: 'equipment', label: 'Austattung', sortable: false},
         { 
             key: 'booking', 
             label: 'Booking',
             sortable: false,
+            className: 't-booking',
             render: (row) => (
+                c_role !== "Viewer" ? (
                 <BuchungsButton 
                     openModal={openModal} 
                     raumData={row} 
                     raumnr={row.roomId} 
                     raumName={row.name}
-                />
+                    />
+                ) : null
             )
         },
         { 
@@ -147,13 +153,14 @@ const RoomList = () => {
                         <th className='t-nr'>Raumnummer</th>
                         <th className='t-cap'>Kapazität</th>
                         <th className='t-type'>Typ</th>
-                        <th className="grow t-assets">Austattung</th>
+                        <th></th>
                         <th></th>
                         <th></th>
                     </tr>
                 }
                 data={tableData}
                 columns={columns}
+                defaultSort={2}
             />
 
             <BookingDialog

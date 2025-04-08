@@ -1,9 +1,9 @@
 import "../css/Table.css"
 import React, { useState } from 'react';
 
-const Table = ({ head, data, columns }) => {
+const Table = ({ head, data, columns, defaultSort=0 }) => {
     // Initialize with name column (index 0) in descending order
-    const [sortConfig, setSortConfig] = useState({ key: 0, direction: 'asc' });
+    const [sortConfig, setSortConfig] = useState({ key: defaultSort, direction: 'asc' });
 
     const handleSort = (columnIndex) => {
         // Only sort if the column is sortable
@@ -78,7 +78,7 @@ const Table = ({ head, data, columns }) => {
                 {sortedData.map((row, rowIndex) => (
                     <tr key={rowIndex}>
                         {columns.map((column, colIndex) => (
-                            <td key={colIndex}>
+                            <td key={colIndex} className={column.className}>
                                 {column.render ? column.render(row) : row[column.key]}
                             </td>
                         ))}

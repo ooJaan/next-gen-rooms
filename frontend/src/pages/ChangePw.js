@@ -16,7 +16,7 @@ const ChangePw = () => {
 
 
     useEffect(() => {
-        if (newPwd === "" | oldPwd === "" | newPwd2 === "") {
+        if (newPwd === "" || oldPwd === "" || newPwd2 === "") {
             setError("") //empty error disables the button but does not show a message
             return
         }
