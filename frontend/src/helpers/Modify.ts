@@ -204,17 +204,9 @@ export const useModify = (roomId: string) => {
     const deleteBooking = async (bookingId: string) => {
         let resp = await deleteWithAuth(`booking/${bookingId}`)
         let newRooms = { ...rooms }
-        let bookings = newRooms[roomId].bookings
-        for (let i = 0; i < bookings.length; i++) {
-            if (bookings[i] === undefined){
-                continue
-            }
-            if (bookings[i].id === bookingId) {
-                delete bookings[i]
-                break;
-            }
-
-        }
+        newRooms[roomId].bookings = newRooms[roomId].bookings.filter(booking => 
+            booking && booking.id !== bookingId
+        );
         setRooms(newRooms)
         getAllstatus()
     }
