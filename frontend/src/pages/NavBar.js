@@ -23,7 +23,7 @@ const NavBar = ({ content, title, actions }) => {
 
 
     return (
-        <div class="nav-container">
+        <div className="nav-container">
             <div class="nav-left">
                 {location.pathname !== "/" && (
                     <Link className='back' to="/">

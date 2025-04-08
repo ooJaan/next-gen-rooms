@@ -29,6 +29,7 @@
 .error {
   color: var(--color-error);
   font-size: 1.25rem;
+  text-align: center;
 }
 
 .content {
@@ -110,4 +111,15 @@
   flex-grow: 1;
   font-size: 1.1rem;
   padding: 7px;
+}
+
+.table-data-name{
+  font-weight: bold;
+  color: var(--color-secondary);
+  text-decoration: none;
+}
+
+.table-data-name:hover{
+  text-decoration: underline;
+  cursor: pointer;
 }

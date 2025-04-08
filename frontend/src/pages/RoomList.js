@@ -75,7 +75,7 @@ const RoomList = () => {
             key: 'name', 
             label: 'Name',
             sortable: true,
-            render: (row) => <Link to={`/overview/${row.roomId}`}>{row.name}</Link>
+            render: (row) => <Link className="table-data-name" to={`/overview/${row.roomId}`}>{row.name}</Link>
         },
         { key: 'number', label: 'RaumNr', sortable: true },
         { key: 'capacity', label: 'Kapazität', sortable: true },
@@ -144,7 +144,7 @@ const RoomList = () => {
                     <tr>
                         <th className='t-status'></th>
                         <th className='t-name'>Name</th>
-                        <th className='t-nr'>RaumNr</th>
+                        <th className='t-nr'>Raumnummer</th>
                         <th className='t-cap'>Kapazität</th>
                         <th className='t-type'>Typ</th>
                         <th className="grow t-assets">Austattung</th>

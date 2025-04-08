@@ -165,13 +165,13 @@ export const RoomProvider = ({ children }) => {
         if (now >= start && now < new Date(end.getTime() + 60 * 1000)) {
             // room is currently booked
             const minutesLeft = Math.floor((end - now) / 1000 / 60) + 1;
-            return { "type": 1, "user": booking.userId, "text": `${roomName} ist bis in ${Math.max(1, minutesLeft)} Minuten gebucht` }
+            return { "type": 1, "user": booking.userId, "text": `${roomName} ist für die nächsten ${Math.max(1, minutesLeft)} Minuten gebucht` }
         }
         let diff_min = (start - now) / 1000 / 60
         if (diff_min <= 30) {
             //room is soon to be booked
             let mins = Math.floor((start - now) / 1000 / 60) + 1
-            return { "type": 2, "user": booking.userId, "text": `${roomName} ist in ${mins} ${mins > 1 ? 'Minuten' : 'Minute'} belegt` }
+            return { "type": 2, "user": booking.userId, "text": `${roomName} ist in ${mins} ${mins > 1 ? 'Minuten' : 'Minute'} gebucht` }
         }
         return null
     }

@@ -7,6 +7,9 @@ import NavBar from './NavBar';
 
 
 const BaseLayout = ({ content, title, actions }) => {
+    const { c_user } = useContext(AuthContext);
+    const { loggedIn } = useContext(AuthContext);
+    const location = useLocation();
     return (
         <div className="wrapper">
             <NavBar title={title} actions={actions}/>

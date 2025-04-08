@@ -99,7 +99,7 @@ const RoomEdit = () => {
             label: 'Actions',
             sortable: false,
             render: (row) => (
-                <button onClick={() => deleteBooking(row.bookingId)}>Delete</button>
+                <button onClick={() => deleteBooking(row.bookingId)}>Löschen</button>
             )
         }
     ];

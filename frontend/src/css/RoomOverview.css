@@ -22,6 +22,7 @@ div {
 }
 .status-msg {
     max-height: min-content;
+    text-align: center;
     padding: 10px;
     font-size: 1.75em;
     background-color: var(--surface);
@@ -29,11 +30,15 @@ div {
     border-width: 3px;
     border-style: solid;
     border-color: transparent;
+    
 }
 
 .status-msg.status-1 {
-    border-color: red !important;
+    background: rgba(255, 67, 45, 0.79);
+    color: white;
+
 }
 .status-msg.status-2 {
-    border-color: orange !important;
+    background-color: rgba(251, 192, 147, 1);
+    color: white;
 }

@@ -60,7 +60,7 @@ const ChangePw = () => {
     return (
         <div className="login-container">
             <div className="login-form">
-                <div class="title">
+                <div className="title">
                     Passwort Ändern
                 </div>
                 <div className="error">{error}</div>
