@@ -34,15 +34,15 @@ const App = () => {
             
             {/* Protected routes still work as before */}
             <Route element={<ProtectedRoute />}>
-              <Route path="/" element={<BaseLayout title="Räume" content={<RoomList />} />} />
+              <Route path="/" element={<RoomList />} />
               <Route path="/change-pw" element={<ChangePw />}/>
-              <Route path="/overview/:id" element={<BaseLayout content={<RoomOverview />} />} />
+              <Route path="/overview/:id" element={<RoomOverview />} />
               <Route path="/debug" element={<BaseLayout title="debug" content={<Debug />} />} />
               <Route path="/user-overview" element={<UserOverview />} />
               
               <Route element={<AdminRoute />}>
                 <Route path="/users" element={<BaseLayout title="Users" content={<Users />} />} />
-                <Route path="/edit/:id" element={<BaseLayout title="Edit" content={<RoomEdit />} />} />
+                <Route path="/edit/:id" element={<RoomEdit />} />
               </Route>
             </Route>
             
