@@ -9,11 +9,15 @@ import { useApi } from '../helpers/api';
 import useDate from '../helpers/Date';
 import Table from "../comps/Table";
 import Loading from "../comps/Loading";
+import BookingDialog from '../comps/BookDialog';
+
 import '../css/RoomOverview.css'
+import '../css/classes.css'
 
 const RoomOverview = () => {
     const { rooms, roomLoading, users, userLoading, status, statusLoading, assets, assetLoading, typeAssets, typeAssetsLoading } = useContext(RoomContext);
     const { id } = useParams();
+    const [bookDialogClosed, setBookDialogClosed] = useState(true)
     const { formatDate, formatTime } = useDate();
     const navigate = useNavigate();
     const { deleteBooking } = useModify(id);
@@ -104,7 +108,14 @@ const RoomOverview = () => {
                     )}
                 </div>
                 <div>
-                    <h1>Buchungen</h1>
+                    <div className="flex-horizontal justify-space-between">
+                        <div >
+                            <h1>Buchungen</h1>
+                        </div>
+                        <div>
+                            <button onClick={() => setBookDialogClosed(false)}>Buchen</button>
+                        </div>
+                    </div>
                     {!roomLoading ? (
                         <Table
                             head={
@@ -125,6 +136,12 @@ const RoomOverview = () => {
 
                 </div>
             </div>
+
+            <BookingDialog
+                roomData={rooms[id]}
+                setClosed={setBookDialogClosed}
+                modalClosed={bookDialogClosed}
+            />
         </div>
     )
 }

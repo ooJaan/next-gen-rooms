@@ -24,8 +24,6 @@ const RoleSelect = ({ options, value, setValue, disabled }) => {
     )
 }
 
-
-
 const Users = () => {
     const { fetchWithAuth, postWithAuth, deleteWithAuth, patchWithAuth } = useApi()
     const [users, setUsers] = useState({})
@@ -76,10 +74,48 @@ const Users = () => {
         updatedUsers[userId].roleId = role.value;
         setUsers(updatedUsers)
     }
-    if(loading){
+
+    const columns = [
+        { key: 'username', label: 'Username', sortable: true },
+        { key: 'email', label: 'Email', sortable: true },
+        { 
+            key: 'role', 
+            label: 'Rolle',
+            sortable: true,
+            render: (row) => (
+                <RoleSelect 
+                    options={options} 
+                    value={options.find(option => option.value === row.roleId) || null}
+                    setValue={(value) => setRole(value, row.id)}
+                    disabled={row.id === c_userId}
+                />
+            )
+        },
+        { 
+            key: 'actions', 
+            label: 'Löschen',
+            sortable: false,
+            render: (row) => (
+                <button 
+                    onClick={() => deleteUser(row.id)}
+                    disabled={row.id === c_userId}
+                >
+                    Löschen
+                </button>
+            )
+        }
+    ];
+
+    const tableData = Object.entries(users).map(([id, data]) => ({
+        id,
+        username: data.username,
+        email: data.email,
+        roleId: data.roleId
+    }));
+
+    if(loading) {
         return "Lade..."
     }
-
 
     return (
         <div>
@@ -92,31 +128,10 @@ const Users = () => {
                         <th>Löschen</th>
                     </tr>
                 }
-                body={Object.entries(users).map(([id, data]) => (
-                    <tr key={id}>
-                        <td>{data.username}</td>
-                        <td>{data.email}</td>
-                        <td>
-                            <RoleSelect 
-                                options={options} 
-                                value={options.find(option => option.value === data.roleId) || null}
-                                setValue={(value) => setRole(value, id)}
-                                disabled={id ===c_userId ? true : false}
-                            />
-                        </td>
-                        <td>
-                            <button 
-                                onClick={() => deleteUser(id)}
-                                disabled={id === c_userId ? true: false}
-                            >
-                                Löschen
-                            </button>
-                        </td>
-                    </tr>
-                ))}
+                data={tableData}
+                columns={columns}
             />
         </div>
-
     )
 }
 
