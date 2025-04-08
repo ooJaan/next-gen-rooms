@@ -5,6 +5,10 @@
     background-color: var(--color-tertiary);
     padding: 1rem;
     color: white;
+    justify-content: space-between;
+}
+.nav-container > div {
+    align-self: center;
 }
 
 .back {
@@ -26,7 +30,11 @@
     display: flex;
     flex-direction: row;
     align-items: center;
-    margin-left: auto;
+}
+.nav-left{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
 }
 
 .logout-button{

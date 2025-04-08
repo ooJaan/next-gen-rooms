@@ -8,16 +8,37 @@ import useDate from '../helpers/Date';
 import Table from "../comps/Table";
 import Loading from "../comps/Loading";
 import BookingDialog from '../comps/BookDialog';
+import BaseLayout from './BaseLayout';
 
 import '../css/RoomOverview.css'
 import '../css/classes.css'
 
 const RoomOverview = () => {
-    const { rooms, roomLoading, users, userLoading, status, statusLoading, assets, assetLoading, typeAssets, typeAssetsLoading } = useContext(RoomContext);
+    const { rooms, roomLoading, users, userLoading, status, statusLoading, assets, assetsLoading, typeAssets, typeAssetsLoading } = useContext(RoomContext);
     const { id } = useParams();
     const [bookDialogClosed, setBookDialogClosed] = useState(true)
+    const [actions, setActions] = useState(null)
     const { formatDate, formatTime } = useDate();
     const navigate = useNavigate()
+
+    useEffect(() => {
+        setActions(
+            <div>
+                <button onClick={() => navigate(`/overview/${id}`)}>Raum buchen</button>
+            </div>
+        );
+
+        return () => setActions(null);
+    }, [id]);
+
+    if (typeAssetsLoading || roomLoading || userLoading || assetsLoading || statusLoading) {
+        return <Loading />
+    }
+    if (rooms[id] === undefined) {
+        console.log("room not found --> redirecting to home")
+        navigate("/")
+        return <></>
+    }
 
     const equipmentColumns = [
         { key: 'name', label: 'Name', sortable: true },
@@ -38,7 +59,7 @@ const RoomOverview = () => {
 
     const equipmentData = [
         ...rooms[id].roomAsset.map(data => ({
-            name: !assetLoading && assets[data.assetId] ? assets[data.assetId].name : 'Loading...',
+            name: !assetsLoading && assets[data.assetId] ? assets[data.assetId].name : 'Loading...',
             count: data.assetCount
         })),
         ...Object.values(typeAssets)
@@ -56,16 +77,10 @@ const RoomOverview = () => {
         userId: booking.userId
     }));
 
-    if (typeAssetsLoading || roomLoading || userLoading || assetLoading || statusLoading) {
-        return <Loading />
-    }
-    if (rooms[id] === undefined) {
-        console.log("room not found --> redirecting to home")
-        navigate("/")
-        return <></>
-    }
+    
 
-    return (
+
+    const content = (
         <div className="overview">
             <div className={!statusLoading ? `status-msg status-${status[id]?.type}` : 'status-msg'}>
                 {statusLoading ? (
@@ -130,6 +145,13 @@ const RoomOverview = () => {
                 modalClosed={bookDialogClosed}
             />
         </div>
+    )
+    return (
+        <BaseLayout 
+            title="Overview" 
+            content={content}
+            actions={actions}
+        />
     )
 }
 export default RoomOverview;

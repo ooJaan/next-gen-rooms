@@ -16,7 +16,7 @@ const UserSection = ({loggedIn, user}) => {
     }
 }
 
-const NavBar = ({ content, title }) => {
+const NavBar = ({ content, title, actions }) => {
     const { c_user } = useContext(AuthContext);
     const { loggedIn } = useContext(AuthContext);
     const location = useLocation();
@@ -24,14 +24,20 @@ const NavBar = ({ content, title }) => {
 
     return (
         <div class="nav-container">
-            {location.pathname !== "/" && (
-                <Link className='back' to="/">
-                    <img src="/back.svg" alt="logo" style={{width: '40px', height: '40px'}} />
-                </Link>
-            )}
-            <div class="room-container">
-            <h1>{title}</h1>
-            <img src="/logo.svg" className="nav-logo"/>
+            <div class="nav-left">
+                {location.pathname !== "/" && (
+                    <Link className='back' to="/">
+                        <img src="/back.svg" alt="logo" style={{width: '40px', height: '40px'}} />
+                    </Link>
+                )}
+                <div className="room-container">
+                <h1>{title}</h1>
+                    <img src="/logo.svg" className="nav-logo"/>
+                </div>
+            </div>
+            
+            <div className="actions">
+                {actions}
             </div>
             <UserSection loggedIn={loggedIn} user={c_user}/>
         </div>
