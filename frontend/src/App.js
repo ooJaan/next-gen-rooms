@@ -13,7 +13,7 @@ import Users from './pages/Users';
 import ChangePw from './pages/ChangePw.js';
 import NetworkWrapper from './provider/Network.js';
 import UserBookings from './pages/UserBookings.js';
-
+import Manage from './pages/Manage.js';
 import { AuthProvider, AuthContext } from "./provider/AuthProvider";
 import { ProtectedRoute } from "./provider/ProtectedRoute";
 import AdminRoute from "./provider/AdminRoute.js";
@@ -43,6 +43,7 @@ const App = () => {
               <Route element={<AdminRoute />}>
                 <Route path="/users" element={<BaseLayout title="Benutzer verwalten" content={<Users />} />} />
                 <Route path="/edit/:id" element={<RoomEdit />} />
+                <Route path="/manage" element={<Manage />} />
               </Route>
             </Route>
             

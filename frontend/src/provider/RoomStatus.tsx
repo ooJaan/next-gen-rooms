@@ -187,7 +187,7 @@ export const RoomProvider = ({ children }) => {
             rooms, roomLoading, setRooms,
             status, statusLoading,
             users, usersLoading,
-            types, typesLoading,
+            types, typesLoading, setTypes,
             assets, assetsLoading, setAssets,
             typeAssets, typeAssetsLoading, setTypeAssets,
             getAllstatus,

@@ -14,7 +14,7 @@ export enum methods {
 }
 export const useModify = (roomId: string) => {
     const { postWithAuth, patchWithAuth, deleteWithAuth } = useApi()
-    const { assets, setAssets, rooms, setRooms, getAllstatus, typeAssets, setTypeAssets } = useContext(RoomContext)
+    const { assets, setAssets, rooms, setRooms, getAllstatus, typeAssets, setTypeAssets, types, setTypes } = useContext(RoomContext)
     /** 
      *  updates an asset and syncs it with the backend
      * @param body: essentially the body of the request
@@ -50,11 +50,14 @@ export const useModify = (roomId: string) => {
                 }
                 break
             case methods.DELETE:
-                resp = await deleteWithAuth(`assets/${id}`)
-                if (resp) {
+                try {
+                    deleteWithAuth(`assets/${id}`)
                     let newAssets = { ...assets }
                     delete newAssets[id]
                     setAssets(newAssets)
+                }
+                catch (error) {
+                    setAssets(oldAssets)
                 }
                 break;
         }
@@ -114,6 +117,38 @@ export const useModify = (roomId: string) => {
                 }
                 catch (error) {
                     setRooms(oldRooms)
+                }
+                break;
+        }
+    }
+    const changeType = async (newType, id, method: methods) => {
+        console.log("new type: ", newType)
+        let resp;
+        let oldTypes = { ...types };
+        let newTypes = { ...types };
+        switch (method) {
+            case methods.NEW:
+                resp = await postWithAuth("types", newType)
+                if (resp) {
+                    newTypes[resp] = newType
+                    setTypes(newTypes)
+                }
+                break;
+            case methods.UPDATE:
+                resp = await patchWithAuth(`types/${id}`, newType)
+                if (resp) {
+                    newTypes[id] = resp
+                    setTypes(newTypes)
+                }
+                break;
+            case methods.DELETE:
+                try {
+                    deleteWithAuth(`types/${id}`)
+                    delete newTypes[id]
+                    setTypes(newTypes)
+                }
+                catch (error) {
+                    setTypes(oldTypes)
                 }
                 break;
         }
@@ -266,6 +301,7 @@ export const useModify = (roomId: string) => {
         changeRoomAsset, 
         changeTypeAsset,
         changeRoomMetadata, 
+        changeType,
         deleteBooking,
         changeBooking,
         createRoom, 
